@@ -85,8 +85,6 @@ def visualize_data(
         second_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
         second_surface.set_alpha(60)
 
-        top_solution_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
-        top_solution_surface.set_alpha(50)
 
         for i in range(HEIGHT):
             row = []
@@ -159,18 +157,27 @@ def visualize_data(
             # print a blue dot for the current position if it is not the start or the end
 
         num_final_steps = max(len(first_final_path), len(second_final_path))
+        first_top_solution_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+
         for step_num in range(0, num_final_steps):
             first_step = first_final_path[min(len(first_final_path) - 1, step_num)]
             second_step = second_final_path[min(len(second_final_path) - 1, step_num)]
             first_rect = cells_dots[first_step[0]][first_step[1]]
             second_rect = cells_dots[second_step[0]][second_step[1]]
 
+            second_top_solution_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+            second_top_solution_surface.set_alpha(256//2)
+
             pygame.draw.circle(
-                top_solution_surface, BLACK, first_rect.center, cell_size // 3
+                second_top_solution_surface, BLACK, first_rect.center, cell_size // 3
             )
+            first_top_solution_surface.blit(second_top_solution_surface, (0, 0))
+            second_top_solution_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+            second_top_solution_surface.set_alpha(256//2)
             pygame.draw.circle(
-                top_solution_surface, WHITE, second_rect.center, cell_size // 3
+                second_top_solution_surface, WHITE, second_rect.center, cell_size // 3
             )
+            first_top_solution_surface.blit(second_top_solution_surface, (0, 0))
 
             set_items(first_step[0], first_step[1], first_rect, first_surface)
 
@@ -189,13 +196,13 @@ def visualize_data(
             #         cell_size // 3,
             #     ),
             # )
-
+            first_top_solution_surface.set_alpha(256)
             set_items(second_step[0], second_step[1], second_rect, second_surface)
-            screen.blit(top_solution_surface, (0, 0))
-            screen.blit(top_solution_surface, (0, 0))
+            screen.blit(first_top_solution_surface, (0, 0))
+            screen.blit(first_top_solution_surface, (0, 0))
+
             pygame.display.flip()
             time.sleep(0.2)
-        top_solution_surface.set_alpha(255)
         time.sleep(5)
 
         pygame.display.flip()
