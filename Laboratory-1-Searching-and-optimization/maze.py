@@ -1,3 +1,11 @@
+from enum import Enum
+import numpy
+
+class NodeState(Enum):
+    NOT_VISITED = 0
+    WALL = 1
+    VISITED = 2
+
 class Node:
     def __init__(self, state: tuple[int, int], parent):
         self.state = state
@@ -74,7 +82,7 @@ class Search:
         ):
             raise ValueError("Start position is out of bounds")
 
-        if maze[start[0]][start[1]] == 1:
+        if maze[start[0]][start[1]] == NodeState.WALL.value:
             raise ValueError("Start position is a wall")
 
         self.finish = finish
@@ -87,10 +95,10 @@ class Search:
         ):
             raise ValueError("Finish position is out of bounds")
 
-        if maze[start[0]][start[1]] == 1:
+        if maze[start[0]][start[1]] == NodeState.WALL.value:
             raise ValueError("Finish position is a wall")
 
-        self.num_steps = 0
+        self.step_number = 0
 
         self.performed_steps_history: list[tuple[int, tuple[int, int]]] = []
 
@@ -125,17 +133,11 @@ class Search:
         return neighbors
 
     def mark_visited(self, cell: tuple[int, int]):
-        self.maze[cell[0]][cell[1]] = 4
-
-    def mark_start(self, cell: tuple[int, int]):
-        self.maze[cell[0]][cell[1]] = 2
-
-    def mark_finish(self, cell: tuple[int, int]):
-        self.maze[cell[0]][cell[1]] = 3
+        self.maze[cell[0]][cell[1]] = NodeState.VISITED.value
 
     def search(
         self,
-    ) -> tuple[int, tuple[tuple[int, int], list[tuple[int, tuple[int, int]]]], Node]:
+    ) -> tuple[list[tuple[int, int]], tuple[tuple[int, int], list[tuple[int, tuple[int, int]]]], Node]:
 
         start_node = Node(state=self.start, parent=None)
         last_node = start_node
@@ -151,15 +153,16 @@ class Search:
 
         while True:
             if frontier.empty():
-                return -1, self.history, last_node
+                self.step_number = -1
+                break
 
             current_node = frontier.remove()
             last_node = current_node
             self.mark_visited(current_node.state)
-            self.performed_steps_history.append((self.num_steps, current_node.state))
+            self.performed_steps_history.append((self.step_number, current_node.state))
 
             if current_node.state == self.finish:
-                return self.num_steps, self.history, last_node
+                break
 
             for neighbor in self.find_neighbors(current_node.state):
                 if neighbor not in explored:
@@ -167,13 +170,28 @@ class Search:
                     frontier.add(new_node)
                     explored.add(neighbor)
 
-            self.num_steps += 1
+            self.step_number += 1
+        
+        final_path = self.get_final_path(last_node)
+        return final_path, self.history, last_node
+
 
     def get_final_path(self, node: Node) -> list[tuple[int, int]]:
         path = []
-        while node.parent is not None:
-            path.append(node.state)
-            node = node.parent
-        path.append(self.start)
-        path.reverse()
+        if self.step_number != -1:
+            while node.parent is not None:
+                path.append(node.state)
+                node = node.parent
+            path.append(self.start)
+            path.reverse()
         return path
+
+def generate_maze(size=(3,3), empty_per_wall = 5):
+
+    generated = numpy.random.randint(empty_per_wall, size=size)
+    generated += 1
+    generated[generated > 1] = 0
+    return generated.tolist()
+
+def random_coordinate(size):
+    return tuple(numpy.random.randint(0, size, 2))
