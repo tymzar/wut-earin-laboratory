@@ -100,7 +100,7 @@ class Search:
         if maze[start[0]][start[1]] == NodeState.WALL.value:
             raise ValueError("Finish position is a wall")
 
-        self.num_steps = 0
+        self.step_number = 0
 
         self.performed_steps_history: list[tuple[int, tuple[int, int]]] = []
 
@@ -161,16 +161,16 @@ class Search:
 
         while True:
             if frontier.empty():
-                self.num_steps = -1
+                self.step_number = -1
                 return -1, self.history, last_node
 
             current_node = frontier.remove()
             last_node = current_node
             self.mark_visited(current_node.state)
-            self.performed_steps_history.append((self.num_steps, current_node.state))
+            self.performed_steps_history.append((self.step_number, current_node.state))
 
             if (current_node.state == self.finish).all():
-                return self.num_steps, self.history, last_node
+                return self.step_number, self.history, last_node
 
             for neighbor in self.find_neighbors(current_node.state):
                 if neighbor not in explored:
@@ -178,11 +178,11 @@ class Search:
                     frontier.add(new_node)
                     explored.add(neighbor)
 
-            self.num_steps += 1
+            self.step_number += 1
 
     def get_final_path(self, node: Node) -> list[tuple[int, int]]:
         path = []
-        if self.num_steps != -1:
+        if self.step_number != -1:
             while node.parent is not None:
                 path.append(node.state)
                 node = node.parent

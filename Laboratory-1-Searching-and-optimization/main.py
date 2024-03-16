@@ -18,13 +18,15 @@ print(finish_position)
 
 current_maze = Search(maze, start_position, finish_position, "bfs")
 
-steps_amount, history, last_node = current_maze.search()
+step_number, history, last_node = current_maze.search()
 
 size, step_history = history
 
-print(f"Number of steps in path: {steps_amount}")
-print(f"Grid size: {size}")
+
 
 final_path = current_maze.get_final_path(last_node)
+steps_amount = len(final_path) - 1
+print(f"Number of steps in path: {steps_amount}")
+print(f"Grid size: {size}")
 
 visualize_data(history, size, maze, start_position, finish_position, final_path)
