@@ -1,10 +1,12 @@
 from enum import Enum
 import numpy
 
+
 class NodeState(Enum):
     NOT_VISITED = 0
     WALL = 1
     VISITED = 2
+
 
 class Node:
     def __init__(self, state: tuple[int, int], parent):
@@ -137,7 +139,11 @@ class Search:
 
     def search(
         self,
-    ) -> tuple[list[tuple[int, int]], tuple[tuple[int, int], list[tuple[int, tuple[int, int]]]], Node]:
+    ) -> tuple[
+        list[tuple[int, int]],
+        tuple[tuple[int, int], list[tuple[int, tuple[int, int]]]],
+        Node,
+    ]:
 
         start_node = Node(state=self.start, parent=None)
         last_node = start_node
@@ -171,10 +177,9 @@ class Search:
                     explored.add(neighbor)
 
             self.step_number += 1
-        
+
         final_path = self.get_final_path(last_node)
         return final_path, self.history, last_node
-
 
     def get_final_path(self, node: Node) -> list[tuple[int, int]]:
         path = []
@@ -186,12 +191,31 @@ class Search:
             path.reverse()
         return path
 
-def generate_maze(size=(3,3), empty_per_wall = 5):
 
-    generated = numpy.random.randint(empty_per_wall, size=size)
-    generated += 1
-    generated[generated > 1] = 0
-    return generated.tolist()
+def generate_maze(
+    size=(3, 3), empty_per_wall=5
+) -> tuple[list[list[int]], tuple[int, int], tuple[int, int]]:
+
+    temporary_maze = numpy.zeros(size)
+    cells_amount = size[0] * size[1]
+
+    while True:
+        start = random_coordinate(size)
+        finish = random_coordinate(size)
+        if start != finish:
+            break
+
+    while True:
+        wall_candidate = random_coordinate(size)
+        if wall_candidate != start and wall_candidate != finish:
+            temporary_maze[wall_candidate] = 1
+            if numpy.count_nonzero(temporary_maze == 1) == int(
+                cells_amount / empty_per_wall
+            ):
+                break
+
+    return temporary_maze, start, finish
+
 
 def random_coordinate(size):
     return tuple(numpy.random.randint(0, size, 2))

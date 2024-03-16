@@ -2,6 +2,7 @@ import pygame
 import time
 from maze import NodeState
 
+
 def visualize_data(
     first_history: tuple[tuple[int, int], list[tuple[int, tuple[int, int]]]],
     second_history: tuple[tuple[int, int], list[tuple[int, tuple[int, int]]]],
@@ -69,6 +70,13 @@ def visualize_data(
 
     while True:
 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or (
+                event.type == pygame.KEYDOWN and event.key == pygame.K_q
+            ):
+                pygame.quit()
+                return
+
         cells = []
         first_surface = pygame.Surface(screen.get_size(),  pygame.SRCALPHA)
         first_surface.set_alpha(50)
@@ -133,4 +141,3 @@ def visualize_data(
 
         pygame.display.flip()
         time.sleep(1)
-
