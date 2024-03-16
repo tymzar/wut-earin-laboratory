@@ -1,5 +1,5 @@
 from maze import Search
-from viz import visualize_data
+from visualize import visualize_data
 
 # Example usage:
 maze = [[0, 1, 0], [0, 1, 0], [0, 0, 0], [0, 1, 1]]
