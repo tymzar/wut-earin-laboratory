@@ -209,8 +209,8 @@ def generate_maze(
     while True:
         wall_candidate = random_coordinate(size)
         if wall_candidate != start and wall_candidate != finish:
-            temporary_maze[wall_candidate] = 1
-            if numpy.count_nonzero(temporary_maze == 1) == int(
+            temporary_maze[wall_candidate] = NodeState.WALL.value
+            if numpy.count_nonzero(temporary_maze == NodeState.WALL.value) == int(
                 cells_amount / empty_per_wall
             ):
                 break

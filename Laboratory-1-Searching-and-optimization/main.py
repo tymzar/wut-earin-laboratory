@@ -43,10 +43,8 @@ def main():
 
     if input_arguments.maze_file and input_arguments.size:
         print(
-            f"{EscapeSequenceColors.ORANGE.value}You can only use one of the options, either --size or --maze-file{Style.reset}"
+            f"{EscapeSequenceColors.ORANGE.value}You can only use one of the options, either --size or --maze-file, in this case --maze-file will be used{Style.reset}"
         )
-
-    print(vars(input_arguments))
 
     if input_arguments.maze_file:
         with open(input_arguments.maze_file, "r") as file:
