@@ -17,6 +17,8 @@ def visualize_data(
     BLACK = (0, 0, 0)
     GRAY = (180, 180, 180)
     WHITE = (255, 255, 255)
+    BLUE = (0, 0, 255)
+    GREEN = (0, 255, 0)
 
     # Create game
     pygame.init()
@@ -49,6 +51,16 @@ def visualize_data(
 
     size, step_history = history
 
+    def set_items(i, j):
+        if maze[i][j] == NodeState.WALL.value:
+            screen.blit(wall, rect)
+
+        if ((i, j) == finish_position).all():
+            screen.blit(flag, rect)
+
+        if ((i, j) == start_position).all():
+            screen.blit(start, rect)
+
     while True:
 
         cells = []
@@ -66,40 +78,34 @@ def visualize_data(
                 pygame.draw.rect(screen, GRAY, rect)
                 pygame.draw.rect(screen, WHITE, rect, 3)
 
-                if maze[i][j] == NodeState.WALL.value:
-                    screen.blit(wall, rect)
-
-                if (i, j) == finish_position:
-                    screen.blit(flag, rect)
-
-                if (i, j) == start_position:
-                    screen.blit(start, rect)
+                set_items(i, j)
 
                 row.append(rect)
             cells.append(row)
 
         for search_step in step_history:
 
-            time.sleep(0.5)
-
             _, cell = search_step
 
-            if cell == finish_position or cell == start_position:
+            if (cell == finish_position).all() or (cell == start_position).all():
                 continue
 
             rect = cells[cell[0]][cell[1]]
 
-            pygame.draw.rect(screen, (0, 0, 255), rect)
-
+            pygame.draw.rect(screen, BLUE, rect)
+            set_items(cell[0], cell[1])
             pygame.display.flip()
-            time.sleep(0.5)
+            time.sleep(0.1)
 
             # print a blue dot for the current position if it is not the start or the end
 
         for step in final_path:
             rect = cells[step[0]][step[1]]
-            pygame.draw.rect(screen, (0, 255, 0), rect)
+            pygame.draw.rect(screen, GREEN, rect)
+            set_items(step[0], step[1])
             pygame.display.flip()
-            time.sleep(0.5)
+            time.sleep(0.2)
 
         pygame.display.flip()
+        time.sleep(1)
+

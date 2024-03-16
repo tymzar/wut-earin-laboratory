@@ -161,6 +161,7 @@ class Search:
 
         while True:
             if frontier.empty():
+                self.num_steps = -1
                 return -1, self.history, last_node
 
             current_node = frontier.remove()
@@ -168,7 +169,7 @@ class Search:
             self.mark_visited(current_node.state)
             self.performed_steps_history.append((self.num_steps, current_node.state))
 
-            if current_node.state == self.finish:
+            if (current_node.state == self.finish).all():
                 return self.num_steps, self.history, last_node
 
             for neighbor in self.find_neighbors(current_node.state):
@@ -181,11 +182,12 @@ class Search:
 
     def get_final_path(self, node: Node) -> list[tuple[int, int]]:
         path = []
-        while node.parent is not None:
-            path.append(node.state)
-            node = node.parent
-        path.append(self.start)
-        path.reverse()
+        if self.num_steps != -1:
+            while node.parent is not None:
+                path.append(node.state)
+                node = node.parent
+            path.append(self.start)
+            path.reverse()
         return path
 
 def generate_maze(size=(3,3), empty_per_wall = 5):
@@ -194,3 +196,6 @@ def generate_maze(size=(3,3), empty_per_wall = 5):
     generated += 1
     generated[generated > 1] = 0
     return generated
+
+def random_coordinate(size):
+    return numpy.random.randint(0, size, 2)

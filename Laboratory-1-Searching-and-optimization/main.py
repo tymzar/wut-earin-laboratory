@@ -1,15 +1,20 @@
 from maze import Search
 from visualize import visualize_data
-from maze import generate_maze
+from maze import generate_maze, random_coordinate
+import numpy
 
 # Example usage:
-maze = generate_maze((5,5))
+size = (10, 10)
+maze = generate_maze(size)
 #maze = [[0, 1, 0], [0, 1, 0], [0, 0, 0], [0, 1, 1]]
 
 print(maze)
 
-start_position = (0, 0)
-finish_position = (0, 2)
+start_position = random_coordinate(size)
+finish_position = random_coordinate(size)
+
+print(start_position)
+print(finish_position)
 
 current_maze = Search(maze, start_position, finish_position, "bfs")
 
