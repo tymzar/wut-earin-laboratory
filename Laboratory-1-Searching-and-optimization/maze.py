@@ -1,4 +1,6 @@
 from enum import Enum
+import numpy
+
 class NodeState(Enum):
     NOT_VISITED = 0
     WALL = 1
@@ -185,3 +187,10 @@ class Search:
         path.append(self.start)
         path.reverse()
         return path
+
+def generate_maze(size=(3,3), empty_per_wall = 5):
+
+    generated = numpy.random.randint(empty_per_wall, size=size)
+    generated += 1
+    generated[generated > 1] = 0
+    return generated

@@ -1,8 +1,12 @@
 from maze import Search
 from visualize import visualize_data
+from maze import generate_maze
 
 # Example usage:
-maze = [[0, 1, 0], [0, 1, 0], [0, 0, 0], [0, 1, 1]]
+maze = generate_maze((5,5))
+#maze = [[0, 1, 0], [0, 1, 0], [0, 0, 0], [0, 1, 1]]
+
+print(maze)
 
 start_position = (0, 0)
 finish_position = (0, 2)
