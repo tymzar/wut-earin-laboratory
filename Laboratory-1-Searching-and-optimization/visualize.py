@@ -55,10 +55,10 @@ def visualize_data(
         if maze[i][j] == NodeState.WALL.value:
             screen.blit(wall, rect)
 
-        if ((i, j) == finish_position).all():
+        if (i, j) == finish_position:
             screen.blit(flag, rect)
 
-        if ((i, j) == start_position).all():
+        if (i, j) == start_position:
             screen.blit(start, rect)
 
     while True:
@@ -87,7 +87,7 @@ def visualize_data(
 
             _, cell = search_step
 
-            if (cell == finish_position).all() or (cell == start_position).all():
+            if cell == finish_position or cell == start_position:
                 continue
 
             rect = cells[cell[0]][cell[1]]

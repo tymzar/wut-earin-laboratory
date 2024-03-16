@@ -169,7 +169,7 @@ class Search:
             self.mark_visited(current_node.state)
             self.performed_steps_history.append((self.step_number, current_node.state))
 
-            if (current_node.state == self.finish).all():
+            if current_node.state == self.finish:
                 return self.step_number, self.history, last_node
 
             for neighbor in self.find_neighbors(current_node.state):
@@ -195,7 +195,7 @@ def generate_maze(size=(3,3), empty_per_wall = 5):
     generated = numpy.random.randint(empty_per_wall, size=size)
     generated += 1
     generated[generated > 1] = 0
-    return generated
+    return generated.tolist()
 
 def random_coordinate(size):
-    return numpy.random.randint(0, size, 2)
+    return tuple(numpy.random.randint(0, size, 2))
