@@ -4,9 +4,7 @@ import numpy
 class NodeState(Enum):
     NOT_VISITED = 0
     WALL = 1
-    # START = 2
-    # FINISH = 3
-    VISITED = 4
+    VISITED = 2
 
 class Node:
     def __init__(self, state: tuple[int, int], parent):
@@ -136,12 +134,6 @@ class Search:
 
     def mark_visited(self, cell: tuple[int, int]):
         self.maze[cell[0]][cell[1]] = NodeState.VISITED.value
-
-    # def mark_start(self, cell: tuple[int, int]):
-    #     self.maze[cell[0]][cell[1]] = NodeState.START.value
-
-    # def mark_finish(self, cell: tuple[int, int]):
-    #     self.maze[cell[0]][cell[1]] = NodeState.FINISH.value
 
     def search(
         self,
