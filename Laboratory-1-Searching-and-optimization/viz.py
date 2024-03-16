@@ -1,6 +1,6 @@
 import pygame
 import time
-
+from maze import NodeState
 
 def visualize_data(
     history: tuple[tuple[int, int], list[tuple[int, tuple[int, int]]]],
@@ -66,7 +66,7 @@ def visualize_data(
                 pygame.draw.rect(screen, GRAY, rect)
                 pygame.draw.rect(screen, WHITE, rect, 3)
 
-                if maze[i][j] == 1:
+                if maze[i][j] == NodeState.WALL.value:
                     screen.blit(wall, rect)
 
                 if (i, j) == finish_position:

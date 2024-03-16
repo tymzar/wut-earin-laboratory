@@ -1,3 +1,11 @@
+from enum import Enum
+class NodeState(Enum):
+    NOT_VISITED = 0
+    WALL = 1
+    # START = 2
+    # FINISH = 3
+    VISITED = 4
+
 class Node:
     def __init__(self, state: tuple[int, int], parent):
         self.state = state
@@ -74,7 +82,7 @@ class Search:
         ):
             raise ValueError("Start position is out of bounds")
 
-        if maze[start[0]][start[1]] == 1:
+        if maze[start[0]][start[1]] == NodeState.WALL.value:
             raise ValueError("Start position is a wall")
 
         self.finish = finish
@@ -87,7 +95,7 @@ class Search:
         ):
             raise ValueError("Finish position is out of bounds")
 
-        if maze[start[0]][start[1]] == 1:
+        if maze[start[0]][start[1]] == NodeState.WALL.value:
             raise ValueError("Finish position is a wall")
 
         self.num_steps = 0
@@ -125,13 +133,13 @@ class Search:
         return neighbors
 
     def mark_visited(self, cell: tuple[int, int]):
-        self.maze[cell[0]][cell[1]] = 4
+        self.maze[cell[0]][cell[1]] = NodeState.VISITED.value
 
-    def mark_start(self, cell: tuple[int, int]):
-        self.maze[cell[0]][cell[1]] = 2
+    # def mark_start(self, cell: tuple[int, int]):
+    #     self.maze[cell[0]][cell[1]] = NodeState.START.value
 
-    def mark_finish(self, cell: tuple[int, int]):
-        self.maze[cell[0]][cell[1]] = 3
+    # def mark_finish(self, cell: tuple[int, int]):
+    #     self.maze[cell[0]][cell[1]] = NodeState.FINISH.value
 
     def search(
         self,
