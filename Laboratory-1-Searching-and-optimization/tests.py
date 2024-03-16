@@ -7,12 +7,12 @@ class TestMaze(unittest.TestCase):
         start_position = (0, 0)
         finish_position = (1, 2)
         bfs_maze = Search(maze, start_position, finish_position, "bfs")
-        bfs_step, _, _  = bfs_maze.search()
+        bfs_final_path, _, _  = bfs_maze.search()
         dfs_maze = Search(maze, start_position, finish_position, "dfs")
-        dfs_step, _, _  = dfs_maze.search()
+        dfs_final_path, _, _  = dfs_maze.search()
 
-        self.assertEqual(-1, bfs_step)
-        self.assertEqual(-1, dfs_step)
+        self.assertEqual([], bfs_final_path)
+        self.assertEqual([], dfs_final_path)
 
 if __name__ == '__main__':
     unittest.main()

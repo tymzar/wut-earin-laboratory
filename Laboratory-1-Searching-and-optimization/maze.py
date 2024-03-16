@@ -145,7 +145,7 @@ class Search:
 
     def search(
         self,
-    ) -> tuple[int, tuple[tuple[int, int], list[tuple[int, tuple[int, int]]]], Node]:
+    ) -> tuple[list[tuple[int, int]], tuple[tuple[int, int], list[tuple[int, tuple[int, int]]]], Node]:
 
         start_node = Node(state=self.start, parent=None)
         last_node = start_node
@@ -162,7 +162,7 @@ class Search:
         while True:
             if frontier.empty():
                 self.step_number = -1
-                return -1, self.history, last_node
+                break
 
             current_node = frontier.remove()
             last_node = current_node
@@ -170,7 +170,7 @@ class Search:
             self.performed_steps_history.append((self.step_number, current_node.state))
 
             if current_node.state == self.finish:
-                return self.step_number, self.history, last_node
+                break
 
             for neighbor in self.find_neighbors(current_node.state):
                 if neighbor not in explored:
@@ -179,6 +179,10 @@ class Search:
                     explored.add(neighbor)
 
             self.step_number += 1
+        
+        final_path = self.get_final_path(last_node)
+        return final_path, self.history, last_node
+
 
     def get_final_path(self, node: Node) -> list[tuple[int, int]]:
         path = []
