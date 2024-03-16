@@ -16,15 +16,19 @@ finish_position = random_coordinate(size)
 print(start_position)
 print(finish_position)
 
-current_maze = Search(maze, start_position, finish_position, "bfs")
+bfs_maze = Search(maze, start_position, finish_position, "bfs")
+dfs_maze = Search(maze, start_position, finish_position, "dfs")
 
-final_path, history, last_node = current_maze.search()
+bfs_final_path, bfs_history, _ = bfs_maze.search()
+dfs_final_path, dfs_history, _ = dfs_maze.search()
 
-size, step_history = history
 
+bfs_steps_amount = len(bfs_final_path) - 1
+dfs_steps_amount = len(dfs_final_path) - 1
 
-steps_amount = len(final_path) - 1
-print(f"Number of steps in path: {steps_amount}")
+print(f"BFS: Number of steps in path: {bfs_steps_amount}")
+print(f"DFS: Number of steps in path: {dfs_steps_amount}")
+
 print(f"Grid size: {size}")
 
-visualize_data(history, size, maze, start_position, finish_position, final_path)
+visualize_data(bfs_history, dfs_history, size, maze, start_position, finish_position, bfs_final_path, dfs_final_path)
