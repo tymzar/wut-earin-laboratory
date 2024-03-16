@@ -3,12 +3,14 @@ import time
 from maze import NodeState
 
 def visualize_data(
-    history: tuple[tuple[int, int], list[tuple[int, tuple[int, int]]]],
+    first_history: tuple[tuple[int, int], list[tuple[int, tuple[int, int]]]],
+    second_history: tuple[tuple[int, int], list[tuple[int, tuple[int, int]]]],
     grid_size: tuple[int, int],
     maze: list[list[int]],
     start_position: tuple[int, int],
     finish_position: tuple[int, int],
-    final_path: list[tuple[int, int]],
+    first_final_path: list[tuple[int, int]],
+    second_final_path: list[tuple[int, int]]
 ) -> None:
 
     HEIGHT, WIDTH = grid_size
@@ -19,11 +21,14 @@ def visualize_data(
     WHITE = (255, 255, 255)
     BLUE = (0, 0, 255)
     GREEN = (0, 255, 0)
+    RED = (255, 0, 0)
 
     # Create game
     pygame.init()
     size = width, height = HEIGHT * 100, WIDTH * 100
     screen = pygame.display.set_mode(size)
+    screen.fill(GRAY)
+
 
     # Fonts
     OPEN_SANS = "assets/fonts/OpenSans-Regular.ttf"
@@ -49,21 +54,26 @@ def visualize_data(
 
     print("Visualize data...")
 
-    size, step_history = history
+    _, first_steps = first_history
+    _, second_steps = second_history
 
-    def set_items(i, j):
+    def set_items(i, j, rect, surface):
         if maze[i][j] == NodeState.WALL.value:
-            screen.blit(wall, rect)
+            surface.blit(wall, rect)
 
         if (i, j) == finish_position:
-            screen.blit(flag, rect)
+            surface.blit(flag, rect)
 
         if (i, j) == start_position:
-            screen.blit(start, rect)
+            surface.blit(start, rect)
 
     while True:
 
         cells = []
+        first_surface = pygame.Surface(screen.get_size(),  pygame.SRCALPHA)
+        first_surface.set_alpha(50)
+        second_surface = pygame.Surface(screen.get_size(),  pygame.SRCALPHA)
+        second_surface.set_alpha(50)
         for i in range(HEIGHT):
             row = []
             for j in range(WIDTH):
@@ -78,31 +88,46 @@ def visualize_data(
                 pygame.draw.rect(screen, GRAY, rect)
                 pygame.draw.rect(screen, WHITE, rect, 3)
 
-                set_items(i, j)
+                set_items(i, j, rect, screen)
 
                 row.append(rect)
             cells.append(row)
 
-        for search_step in step_history:
+        num_steps = max(len(first_steps), len(second_steps))
 
-            _, cell = search_step
+        for step_num in range(0, num_steps):
+            
+            _, first_cell = first_steps[min(len(first_steps)-1, step_num)]
+            _, second_cell = second_steps[min(len(second_steps)-1, step_num)]
 
-            if cell == finish_position or cell == start_position:
-                continue
 
-            rect = cells[cell[0]][cell[1]]
+            first_rect = cells[first_cell[0]][first_cell[1]]
+            second_rect = cells[second_cell[0]][second_cell[1]]
 
-            pygame.draw.rect(screen, BLUE, rect)
-            set_items(cell[0], cell[1])
+            pygame.draw.rect(first_surface, BLUE, first_rect)
+            pygame.draw.rect(second_surface, RED, second_rect)
+            set_items(first_cell[0], first_cell[1], first_rect, first_surface)
+            set_items(second_cell[0], second_cell[1], second_rect, second_surface)
+            screen.blit(second_surface, (0, 0))
+            screen.blit(first_surface, (0, 0))
             pygame.display.flip()
             time.sleep(0.1)
 
             # print a blue dot for the current position if it is not the start or the end
 
-        for step in final_path:
-            rect = cells[step[0]][step[1]]
-            pygame.draw.rect(screen, GREEN, rect)
-            set_items(step[0], step[1])
+
+        num_final_steps = max(len(first_final_path), len(second_final_path))
+        for step_num in range(0, num_final_steps):
+            first_step = first_final_path[min(len(first_final_path) - 1, step_num)]
+            second_step = second_final_path[min(len(second_final_path) - 1, step_num)]
+            first_rect = cells[first_step[0]][first_step[1]]
+            second_rect = cells[second_step[0]][second_step[1]]
+            pygame.draw.rect(first_surface, GREEN, first_rect)
+            set_items(first_step[0], first_step[1], first_rect, first_surface)
+            pygame.draw.rect(second_surface, BLACK, second_rect)
+            set_items(second_step[0], second_step[1], second_rect, second_surface)
+            screen.blit(second_surface, (0, 0))
+            screen.blit(first_surface, (0, 0))
             pygame.display.flip()
             time.sleep(0.2)
 
