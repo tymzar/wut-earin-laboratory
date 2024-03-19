@@ -16,7 +16,6 @@ def visualize_data(
 
     HEIGHT, WIDTH = grid_size
 
-    # Colors
     BLACK = (0, 0, 0)
     GRAY = (180, 180, 180)
     WHITE = (255, 255, 255)
@@ -25,19 +24,11 @@ def visualize_data(
     RED = (255, 0, 0)
     ORANGE = (255, 165, 0)
 
-    # Create game
     pygame.init()
     size = width, height = HEIGHT * 100, WIDTH * 100
     screen = pygame.display.set_mode(size)
     screen.fill(GRAY)
 
-    # Fonts
-    OPEN_SANS = "assets/fonts/OpenSans-Regular.ttf"
-    smallFont = pygame.font.Font(OPEN_SANS, 20)
-    mediumFont = pygame.font.Font(OPEN_SANS, 28)
-    largeFont = pygame.font.Font(OPEN_SANS, 40)
-
-    # Compute board size
     BOARD_PADDING = 20
     board_width = ((2 / 3) * width) - (BOARD_PADDING * 2)
     board_height = height - (BOARD_PADDING * 2)
@@ -85,13 +76,11 @@ def visualize_data(
         second_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
         second_surface.set_alpha(60)
 
-
         for i in range(HEIGHT):
             row = []
             circles_row = []
             for j in range(WIDTH):
 
-                # Draw rectangle for cell
                 rect = pygame.Rect(
                     board_origin[0] + j * cell_size,
                     board_origin[1] + i * cell_size,
@@ -99,7 +88,6 @@ def visualize_data(
                     cell_size,
                 )
 
-                # Draw transparent circle for cell (half oh the cell size)
                 circle = pygame.draw.circle(
                     screen,
                     (0, 0, 0, 0),
@@ -128,24 +116,7 @@ def visualize_data(
             second_rect = cells[second_cell[0]][second_cell[1]]
 
             pygame.draw.rect(first_surface, BLUE, first_rect)
-            # pygame.draw.circle(first_surface, BLUE, first_rect.center, cell_size // 4)
             pygame.draw.rect(second_surface, RED, second_rect)
-
-            # transformed_center_coords_x, transformed_center_coords_y = (
-            #     second_rect.center[0] - (cell_size // 4),
-            #     second_rect.center[1] - (cell_size // 4),
-            # )
-
-            # pygame.draw.rect(
-            #     second_surface,
-            #     RED,
-            #     (
-            #         transformed_center_coords_x,
-            #         transformed_center_coords_y,
-            #         cell_size // 2,
-            #         cell_size // 2,
-            #     ),
-            # )
 
             set_items(first_cell[0], first_cell[1], first_rect, first_surface)
             set_items(second_cell[0], second_cell[1], second_rect, second_surface)
@@ -153,8 +124,6 @@ def visualize_data(
             screen.blit(first_surface, (0, 0))
             pygame.display.flip()
             time.sleep(0.2)
-
-            # print a blue dot for the current position if it is not the start or the end
 
         num_final_steps = max(len(first_final_path), len(second_final_path))
         first_top_solution_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
@@ -165,15 +134,19 @@ def visualize_data(
             first_rect = cells_dots[first_step[0]][first_step[1]]
             second_rect = cells_dots[second_step[0]][second_step[1]]
 
-            second_top_solution_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
-            second_top_solution_surface.set_alpha(256//2)
+            second_top_solution_surface = pygame.Surface(
+                screen.get_size(), pygame.SRCALPHA
+            )
+            second_top_solution_surface.set_alpha(256 // 2)
 
             pygame.draw.circle(
                 second_top_solution_surface, BLACK, first_rect.center, cell_size // 3
             )
             first_top_solution_surface.blit(second_top_solution_surface, (0, 0))
-            second_top_solution_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
-            second_top_solution_surface.set_alpha(256//2)
+            second_top_solution_surface = pygame.Surface(
+                screen.get_size(), pygame.SRCALPHA
+            )
+            second_top_solution_surface.set_alpha(256 // 2)
             pygame.draw.circle(
                 second_top_solution_surface, WHITE, second_rect.center, cell_size // 3
             )
@@ -181,21 +154,6 @@ def visualize_data(
 
             set_items(first_step[0], first_step[1], first_rect, first_surface)
 
-            # transformed_center_coords_x, transformed_center_coords_y = (
-            #     second_rect.center[0] - (cell_size // 6),
-            #     second_rect.center[1] - (cell_size // 6),
-            # )
-
-            # pygame.draw.rect(
-            #     top_solution_surface,
-            #     ORANGE,
-            #     (
-            #         transformed_center_coords_x,
-            #         transformed_center_coords_y,
-            #         cell_size // 3,
-            #         cell_size // 3,
-            #     ),
-            # )
             first_top_solution_surface.set_alpha(256)
             set_items(second_step[0], second_step[1], second_rect, second_surface)
             screen.blit(first_top_solution_surface, (0, 0))

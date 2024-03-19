@@ -29,17 +29,8 @@ def main():
         type=str,
         help=f"Path to the maze file e.g. --maze-file maze.txt. File format should consist of space separated integers and format should be the following: first line is the start position, second line is the finish position, and the rest of the lines are the maze",
     )
-    command_line_parser.add_argument(
-        "--search-type",
-        type=str,
-        help="Type of search to perform, either bfs or dfs",
-        choices=["bfs", "dfs"],
-        default="bfs",
-    )
 
     input_arguments = command_line_parser.parse_args()
-
-    search_type = input_arguments.search_type
 
     if input_arguments.maze_file and input_arguments.size:
         print(
@@ -78,11 +69,8 @@ def main():
     bfs_maze = Search(maze, start_position, finish_position, "bfs")
     dfs_maze = Search(maze, start_position, finish_position, "dfs")
 
-    bfs_final_path, bfs_history, _ = bfs_maze.search()
-    dfs_final_path, dfs_history, _ = dfs_maze.search()
-
-    bfs_steps_amount = len(bfs_final_path) - 1
-    dfs_steps_amount = len(dfs_final_path) - 1
+    bfs_steps_amount, bfs_final_path, bfs_history, _ = bfs_maze.search()
+    dfs_steps_amount, dfs_final_path, dfs_history, _ = dfs_maze.search()
 
     print(
         f"{EscapeSequenceColors.GREEN.value}BFS: Number of steps in path: {bfs_steps_amount}{Style.reset}"
