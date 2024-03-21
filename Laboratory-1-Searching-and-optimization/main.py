@@ -28,6 +28,12 @@ def main():
         type=str,
         help=f"Path to the maze file e.g. --maze-file maze.txt. File format should consist of space separated integers and format should be the following: first line is the start position, second line is the finish position, and the rest of the lines are the maze",
     )
+    command_line_parser.add_argument(
+        "-s",
+        "--screenshot-only",
+        action="store_true",
+        help=f"Boolean value if to make only screenshot instead of showing the visualization e.g. --screenshot-only",
+    )
 
     input_arguments = command_line_parser.parse_args()
 
@@ -86,6 +92,7 @@ def main():
         finish_position,
         bfs_final_path,
         dfs_final_path,
+        input_arguments.screenshot_only
     )
 
 
