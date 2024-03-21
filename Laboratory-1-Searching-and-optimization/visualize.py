@@ -33,7 +33,7 @@ def visualize_data(
     screen.fill(GRAY)
 
     BOARD_PADDING = 20
-    board_width = ((2 / 3) * width) - (BOARD_PADDING * 2)
+    board_width = (width) - (BOARD_PADDING * 2)
     board_height = height - (BOARD_PADDING * 2)
     cell_size = int(min(board_width / WIDTH, board_height / HEIGHT))
     board_origin = (BOARD_PADDING, BOARD_PADDING)
