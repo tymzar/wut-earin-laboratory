@@ -49,8 +49,7 @@ def main():
             maze = [list(map(int, line.split())) for line in file.readlines()]
 
     elif input_arguments.size:
-        size = input_arguments.size
-        maze, start_position, finish_position = generate_maze(size)
+        maze, start_position, finish_position = generate_maze(input_arguments.size)
     else:
         raise ValueError(
             "You must use either --size or --maze-file run the program. Use --help for more information."
