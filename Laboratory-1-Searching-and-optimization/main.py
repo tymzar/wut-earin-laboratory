@@ -54,7 +54,7 @@ def main():
         )
 
     print(
-        f"{EscapeSequenceColors.LIGHT_BLUE.value}Performing serach on the following maze:{Style.reset}"
+        f"{EscapeSequenceColors.LIGHT_BLUE.value}Performing search on the following maze:{Style.reset}"
     )
     for row in maze:
         print(row)
@@ -73,10 +73,12 @@ def main():
     dfs_steps_amount, dfs_final_path, dfs_history, _ = dfs_maze.search()
 
     print(
-        f"{EscapeSequenceColors.GREEN.value}BFS: Number of steps in path: {bfs_steps_amount}{Style.reset}"
+        f"{EscapeSequenceColors.GREEN.value}BFS: Number of steps needed to find the path: {bfs_steps_amount}{Style.reset}\n"
+        f"{EscapeSequenceColors.GREEN.value}BFS: Length of the path: {len(bfs_final_path)-1}{Style.reset}"
     )
     print(
-        f"{EscapeSequenceColors.GREEN.value}DFS: Number of steps in path: {dfs_steps_amount}{Style.reset}"
+        f"{EscapeSequenceColors.GREEN.value}DFS: Number of steps needed to find the path: {dfs_steps_amount}{Style.reset}\n"
+        f"{EscapeSequenceColors.GREEN.value}DFS: Length of the path: {len(dfs_final_path)-1}{Style.reset}"
     )
 
     visualize_data(

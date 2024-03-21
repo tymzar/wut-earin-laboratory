@@ -1,6 +1,7 @@
 import unittest
 from maze import Search, generate_maze
-
+from colored import Fore, Style
+from main import EscapeSequenceColors
 
 class TestMaze(unittest.TestCase):
     def test_unreachable(self):
@@ -22,9 +23,9 @@ class TestMaze(unittest.TestCase):
         start_position = (0, 0)
         finish_position = (1, 2)
         bfs_maze = Search(maze, start_position, finish_position, "bfs")
-        dfs_path_steps, dfs_path, _, _ = bfs_maze.search()
+        bfs_path_steps, bfs_path, _, _ = bfs_maze.search()
         dfs_maze = Search(maze, start_position, finish_position, "dfs")
-        bfs_path_steps, bfs_path, _, _ = dfs_maze.search()
+        dfs_path_steps, dfs_path, _, _ = dfs_maze.search()
 
         self.assertNotEqual(0, len(dfs_path))
         self.assertNotEqual(0, len(bfs_path))
@@ -100,6 +101,49 @@ class TestMaze(unittest.TestCase):
         finish_position = (1, 2)
         with self.assertRaises(ValueError):
             Search(maze, start_position, finish_position, "bfs")
+
+    def test_bfs_dfs_difference_path_length(self):
+        maze = [
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0]
+        ]
+        start_position = (4, 4)
+        finish_position = (0, 0)
+        bfs_maze = Search(maze, start_position, finish_position, "bfs")
+        _, bfs_path, _, _ = bfs_maze.search()
+        dfs_maze = Search(maze, start_position, finish_position, "dfs")
+        _, dfs_path, _, _ = dfs_maze.search()
+
+        self.assertGreater(len(dfs_path), len(bfs_path))
+        print(
+            f"{EscapeSequenceColors.GREEN.value}DFS: Length of the path: {len(dfs_path)-1}{Style.reset}\n"
+            f"{EscapeSequenceColors.GREEN.value}BFS: Length of the path: {len(bfs_path)-1}{Style.reset}\n"
+        )
+
+    def test_bfs_dfs_difference_algorithm_steps(self):
+        maze = [
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0]
+        ]
+        start_position = (4, 4)
+        finish_position = (2, 0)
+        bfs_maze = Search(maze, start_position, finish_position, "bfs")
+        bfs_algo_steps, _, _, _ = bfs_maze.search()
+        dfs_maze = Search(maze, start_position, finish_position, "dfs")
+        dfs_algo_steps, _, _, _ = dfs_maze.search()
+
+        self.assertGreater(bfs_algo_steps, dfs_algo_steps)
+        print(
+            f"{EscapeSequenceColors.GREEN.value}DFS: Number of steps needed to find the path: {dfs_algo_steps}{Style.reset}\n"
+            f"{EscapeSequenceColors.GREEN.value}BFS: Number of steps needed to find the path: {bfs_algo_steps}{Style.reset}\n"
+        )
+
 
 
 if __name__ == "__main__":
