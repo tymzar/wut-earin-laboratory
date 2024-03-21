@@ -269,7 +269,8 @@ class Search:
             self.step_number += 1
 
         final_path = self.get_final_path(last_node)
-        return self.step_number, final_path, self.history, last_node
+        steps_amount = len(final_path) if self.step_number != -1 else -1
+        return steps_amount, final_path, self.history, last_node
 
     def get_final_path(self, node: Node) -> list[tuple[int, int]]:
         """Get the final path from the start to the finish node
