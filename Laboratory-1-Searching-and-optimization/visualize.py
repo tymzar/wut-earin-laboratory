@@ -14,7 +14,7 @@ def visualize_data(
     finish_position: tuple[int, int],
     first_final_path: list[tuple[int, int]],
     second_final_path: list[tuple[int, int]],
-    test_mode: bool = False
+    screenshot_mode: bool = False
 ) -> None:
 
     HEIGHT, WIDTH = shape(maze)
@@ -63,7 +63,7 @@ def visualize_data(
             surface.blit(start, rect)
 
     def sleep(seconds):
-        if not test_mode:
+        if not screenshot_mode:
             time.sleep(seconds)
     while True:
 
@@ -131,7 +131,7 @@ def visualize_data(
             pygame.display.flip()
             sleep(0.2)
 
-        if test_mode:
+        if screenshot_mode:
             if not os.path.exists('images'):
                 os.makedirs('images')
             file_name = hashlib.md5(str.encode(str(maze) + str(start_position)+ str(finish_position))).hexdigest()
@@ -172,7 +172,7 @@ def visualize_data(
 
             pygame.display.flip()
             sleep(0.2)
-        if test_mode:
+        if screenshot_mode:
             pygame.image.save(screen, f"./images/{file_name}-final-path.png")
             break
         sleep(5)

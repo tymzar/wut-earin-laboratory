@@ -114,9 +114,9 @@ class TestMaze(unittest.TestCase):
         start_position = (4, 4)
         finish_position = (0, 0)
         bfs_maze = Search(maze, start_position, finish_position, "bfs")
-        bfs_algo_steps, bfs_final_path, bfs_history, _ = bfs_maze.search()
+        _, bfs_final_path, bfs_history, _ = bfs_maze.search()
         dfs_maze = Search(maze, start_position, finish_position, "dfs")
-        dfs_algo_steps, dfs_final_path, dfs_history, _ = dfs_maze.search()
+        _, dfs_final_path, dfs_history, _ = dfs_maze.search()
 
         visualize_data(
             bfs_history,
@@ -126,7 +126,7 @@ class TestMaze(unittest.TestCase):
             finish_position,
             bfs_final_path,
             dfs_final_path,
-            test_mode=True
+            screenshot_mode=True
         )
 
         self.assertGreater(len(dfs_final_path), len(bfs_final_path))
@@ -135,7 +135,7 @@ class TestMaze(unittest.TestCase):
             f"{EscapeSequenceColors.GREEN.value}BFS: Length of the path: {len(bfs_final_path)-1}{Style.reset}\n"
         )
 
-    def test_bfs_dfs_difference_algorithm_steps(self):
+    def test_dfs_makes_less_steps(self):
         maze = [
             [0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0],
@@ -158,7 +158,7 @@ class TestMaze(unittest.TestCase):
             finish_position,
             bfs_final_path,
             dfs_final_path,
-            test_mode=True
+            screenshot_mode=True
         )
 
         self.assertGreater(bfs_algo_steps, dfs_algo_steps)
@@ -167,6 +167,37 @@ class TestMaze(unittest.TestCase):
             f"{EscapeSequenceColors.GREEN.value}BFS: Number of steps needed to find the path: {bfs_algo_steps}{Style.reset}\n"
         )
 
+    def test_bfs_makes_less_steps(self):
+        maze = [
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0]
+        ]
+        start_position = (4, 4)
+        finish_position = (3, 4)
+        bfs_maze = Search(maze, start_position, finish_position, "bfs")
+        bfs_algo_steps, bfs_final_path, bfs_history, _ = bfs_maze.search()
+        dfs_maze = Search(maze, start_position, finish_position, "dfs")
+        dfs_algo_steps, dfs_final_path, dfs_history, _ = dfs_maze.search()
+
+        visualize_data(
+            bfs_history,
+            dfs_history,
+            maze,
+            start_position,
+            finish_position,
+            bfs_final_path,
+            dfs_final_path,
+            screenshot_mode=True
+        )
+
+        self.assertGreater(dfs_algo_steps, bfs_algo_steps)
+        print(
+            f"{EscapeSequenceColors.GREEN.value}DFS: Number of steps needed to find the path: {dfs_algo_steps}{Style.reset}\n"
+            f"{EscapeSequenceColors.GREEN.value}BFS: Number of steps needed to find the path: {bfs_algo_steps}{Style.reset}\n"
+        )
 
 
 if __name__ == "__main__":
