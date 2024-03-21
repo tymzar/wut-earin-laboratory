@@ -2,6 +2,7 @@ import unittest
 from maze import Search, generate_maze
 from colored import Fore, Style
 from main import EscapeSequenceColors
+from visualize import visualize_data
 
 class TestMaze(unittest.TestCase):
     def test_unreachable(self):
@@ -113,14 +114,25 @@ class TestMaze(unittest.TestCase):
         start_position = (4, 4)
         finish_position = (0, 0)
         bfs_maze = Search(maze, start_position, finish_position, "bfs")
-        _, bfs_path, _, _ = bfs_maze.search()
+        bfs_algo_steps, bfs_final_path, bfs_history, _ = bfs_maze.search()
         dfs_maze = Search(maze, start_position, finish_position, "dfs")
-        _, dfs_path, _, _ = dfs_maze.search()
+        dfs_algo_steps, dfs_final_path, dfs_history, _ = dfs_maze.search()
 
-        self.assertGreater(len(dfs_path), len(bfs_path))
+        visualize_data(
+            bfs_history,
+            dfs_history,
+            maze,
+            start_position,
+            finish_position,
+            bfs_final_path,
+            dfs_final_path,
+            test_mode=True
+        )
+
+        self.assertGreater(len(dfs_final_path), len(bfs_final_path))
         print(
-            f"{EscapeSequenceColors.GREEN.value}DFS: Length of the path: {len(dfs_path)-1}{Style.reset}\n"
-            f"{EscapeSequenceColors.GREEN.value}BFS: Length of the path: {len(bfs_path)-1}{Style.reset}\n"
+            f"{EscapeSequenceColors.GREEN.value}DFS: Length of the path: {len(dfs_final_path)-1}{Style.reset}\n"
+            f"{EscapeSequenceColors.GREEN.value}BFS: Length of the path: {len(bfs_final_path)-1}{Style.reset}\n"
         )
 
     def test_bfs_dfs_difference_algorithm_steps(self):
@@ -134,9 +146,20 @@ class TestMaze(unittest.TestCase):
         start_position = (4, 4)
         finish_position = (2, 0)
         bfs_maze = Search(maze, start_position, finish_position, "bfs")
-        bfs_algo_steps, _, _, _ = bfs_maze.search()
+        bfs_algo_steps, bfs_final_path, bfs_history, _ = bfs_maze.search()
         dfs_maze = Search(maze, start_position, finish_position, "dfs")
-        dfs_algo_steps, _, _, _ = dfs_maze.search()
+        dfs_algo_steps, dfs_final_path, dfs_history, _ = dfs_maze.search()
+
+        visualize_data(
+            bfs_history,
+            dfs_history,
+            maze,
+            start_position,
+            finish_position,
+            bfs_final_path,
+            dfs_final_path,
+            test_mode=True
+        )
 
         self.assertGreater(bfs_algo_steps, dfs_algo_steps)
         print(
