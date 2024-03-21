@@ -1,20 +1,23 @@
 import pygame
 import time
+import hashlib
 from maze import NodeState
+import os
+from numpy import shape
 
 
 def visualize_data(
     first_history: tuple[tuple[int, int], list[tuple[int, tuple[int, int]]]],
     second_history: tuple[tuple[int, int], list[tuple[int, tuple[int, int]]]],
-    grid_size: tuple[int, int],
     maze: list[list[int]],
     start_position: tuple[int, int],
     finish_position: tuple[int, int],
     first_final_path: list[tuple[int, int]],
     second_final_path: list[tuple[int, int]],
+    test_mode: bool = False
 ) -> None:
 
-    HEIGHT, WIDTH = grid_size
+    HEIGHT, WIDTH = shape(maze)
 
     BLACK = (0, 0, 0)
     GRAY = (180, 180, 180)
@@ -59,6 +62,9 @@ def visualize_data(
         if (i, j) == start_position:
             surface.blit(start, rect)
 
+    def sleep(seconds):
+        if not test_mode:
+            time.sleep(seconds)
     while True:
 
         for event in pygame.event.get():
@@ -123,8 +129,13 @@ def visualize_data(
             screen.blit(second_surface, (0, 0))
             screen.blit(first_surface, (0, 0))
             pygame.display.flip()
-            time.sleep(0.2)
+            sleep(0.2)
 
+        if test_mode:
+            if not os.path.exists('images'):
+                os.makedirs('images')
+            file_name = hashlib.md5(str.encode(str(maze) + str(start_position)+ str(finish_position))).hexdigest()
+            pygame.image.save(screen, f"./images/{file_name}-algo-steps.png")
         num_final_steps = max(len(first_final_path), len(second_final_path))
         first_top_solution_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
 
@@ -160,8 +171,11 @@ def visualize_data(
             screen.blit(first_top_solution_surface, (0, 0))
 
             pygame.display.flip()
-            time.sleep(0.2)
-        time.sleep(5)
+            sleep(0.2)
+        if test_mode:
+            pygame.image.save(screen, f"./images/{file_name}-final-path.png")
+            break
+        sleep(5)
 
         pygame.display.flip()
-        time.sleep(1)
+        sleep(1)

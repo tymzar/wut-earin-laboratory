@@ -4,7 +4,6 @@ from maze import generate_maze, random_coordinate
 from argparse import ArgumentParser
 from colored import Fore, Style
 from enum import Enum
-from numpy import shape
 
 
 class EscapeSequenceColors(Enum):
@@ -42,8 +41,6 @@ def main():
             start_position = tuple(map(int, file.readline().split()))
             finish_position = tuple(map(int, file.readline().split()))
             maze = [list(map(int, line.split())) for line in file.readlines()]
-
-            size = shape(maze)
 
     elif input_arguments.size:
         size = input_arguments.size
@@ -84,7 +81,6 @@ def main():
     visualize_data(
         bfs_history,
         dfs_history,
-        size,
         maze,
         start_position,
         finish_position,
