@@ -29,25 +29,25 @@ class GeneticAlgorithm:
         self.mutation_strength = mutation_strength
         self.crossover_rate = crossover_rate
         self.num_generations = num_generations
+        self.tournament_size = 5
 
     def initialize_population(self):
         return [(random.uniform(*init_ranges[rosenbrock_2d][0]), random.uniform(*init_ranges[rosenbrock_2d][1])) for _ in range(self.population_size)]
 
     def evaluate_population(self, population) -> ...:
-        # TODO Evaluate the fitness of the population and return the values for each individual in the population
-        ...
+        return [(rosenbrock_2d(*individual)) for individual in population]
 
     def selection(self, population, fitness_values) -> ...:
-        # TODO Implement selection mechanism and return the selected individuals
-        pass
+        data = list(zip(population, fitness_values))
+        return [min(random.sample(data, self.tournament_size), key=lambda sample: sample[1])[0] for _ in range(self.population_size)]
 
     def crossover(self, parents) -> ...:
         # TODO Implement the crossover mechanism over the parents and return the offspring
-        ...
+        return parents
 
     def mutate(self, individuals) -> ...:
         # TODO Implement mutation mechanism over the given individuals and return the results
-        ...
+        return individuals
 
     def evolve(self, seed: int) -> ...:
         # Run the genetic algorithm and return the lists that contain the best solution for each generation,
