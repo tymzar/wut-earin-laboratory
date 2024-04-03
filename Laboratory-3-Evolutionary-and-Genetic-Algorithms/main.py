@@ -1,13 +1,15 @@
 from genetic_algorithm import GeneticAlgorithm
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     # TODO Experiment 1...
     ga = GeneticAlgorithm(
         population_size=1000,
-        mutation_rate=0,
-        mutation_strength=0,
-        crossover_rate=0,
-        num_generations=1,
+        mutation_rate=0.5,
+        mutation_strength=10,
+        crossover_rate=0.3,
+        num_generations=100,
+        tournament_size=30
     )
 
     population = ga.initialize_population()
@@ -15,4 +17,22 @@ if __name__ == "__main__":
 
     # print(str(population))
     print(str(ga.selection(population, fitness)))
-    # best_solutions, best_fitness_values, average_fitness_values = ga.evolve(seed=...)
+    best_solutions, best_fitness_values, average_fitness_values = ga.evolve(seed=1)
+
+    figure, axis = plt.subplots(2, 2)
+
+    axis[0, 0].plot(range(0, ga.num_generations), list(map(lambda sol: sol[0], best_solutions)))
+    axis[0, 0].set_title("Best solutions X")
+
+    axis[0, 1].plot(range(0, ga.num_generations), list(map(lambda sol: sol[1], best_solutions)))
+    axis[0, 1].set_title("Best solutions Y")
+
+    axis[1, 0].plot(range(0, ga.num_generations), best_fitness_values)
+    axis[1, 0].set_title("Best fitness value")
+
+    axis[1, 1].plot(range(0, ga.num_generations), average_fitness_values)
+    axis[1, 1].set_title("Average fitness value")
+
+    plt.show()
+
+    # print(f'Best solutions: ${best_solutions}. Best fitness: ${best_fitness_values} average fitness_values: ${average_fitness_values}')
