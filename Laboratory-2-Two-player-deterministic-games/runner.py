@@ -28,8 +28,11 @@ ai_turn = False
 while True:
 
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
+        if event.type == pygame.QUIT or (
+            event.type == pygame.KEYDOWN and event.key == pygame.K_q
+        ):
+            pygame.quit()
+            break
 
     screen.fill(GRAY)
 
