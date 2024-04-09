@@ -31,7 +31,8 @@ def compute_and_prepeare_plots(ga: GeneticAlgorithm, index: int, seed=1, legend=
         if len(legend) > 0:
             axis[i].legend()
 
-    return [ga.population_size, ga.mutation_rate, ga.mutation_strength, ga.crossover_rate, ga.num_generations, ga.tournament_size, seed, best_fitness_values[-1], average_fitness_values[-1]]
+    return [ga.population_size, ga.mutation_rate, ga.mutation_strength,
+            ga.crossover_rate, ga.num_generations, ga.tournament_size, seed, best_fitness_values[-1], average_fitness_values[-1]]
 
 
 if __name__ == "__main__":
@@ -59,8 +60,10 @@ if __name__ == "__main__":
     ]
     
     
-    task1_results = [compute_and_prepeare_plots(task1_experiments[i], 1, legend=f"Experiment {i}") for i in range (0, len(task1_experiments))]
-    task1_table = pd.DataFrame(task1_results, index=range(0, len(task1_results)), columns=["Population size", "Mutation rate", "Mutation strength", "Crossover rate", "Number of generations", "Tournament size", "Seed", "Best fitness value", "Average fitness value"])
+    task1_results = [compute_and_prepeare_plots(task1_experiments[i], index=1, legend=f"Experiment {i}") for i in range (0, len(task1_experiments))]
+    task1_table = pd.DataFrame(task1_results, index=range(0, len(task1_results)),
+                                columns=["Population size", "Mutation rate", "Mutation strength", "Crossover rate",
+                                         "Number of generations", "Tournament size", "Seed", "Best fitness value", "Average fitness value"])
     print(task1_table)
 
 
@@ -94,8 +97,10 @@ if __name__ == "__main__":
         #TODO 0, 1, 2, 3, 4
     ]
 
-    task2_results = [compute_and_prepeare_plots(task2_experiments[i], 2, seed=i, legend=f"Random seed = {i}") for i in range (0, len(task2_experiments))]
-    task2_table = pd.DataFrame(task2_results, index=range(0, len(task2_results)), columns=["Population size", "Mutation rate", "Mutation strength", "Crossover rate", "Number of generations", "Tournament size", "Seed", "Best fitness value", "Average fitness value"])
+    task2_results = [compute_and_prepeare_plots(task2_experiments[i], index=2, seed=i, legend=f"Random seed = {i}") for i in range (0, len(task2_experiments))]
+    task2_table = pd.DataFrame(task2_results, index=range(0, len(task2_results)),
+                               columns=["Population size", "Mutation rate", "Mutation strength", "Crossover rate",
+                                        "Number of generations", "Tournament size", "Seed", "Best fitness value", "Average fitness value"])
     print(task2_table)
 
     #TODO: Find best solution across all seeds and its fitness value
