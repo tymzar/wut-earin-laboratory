@@ -154,57 +154,144 @@ if __name__ == "__main__":
     task1_table = pd.DataFrame(task1_results, index=range(0, len(task1_results)),
                                 columns=["Population size", "Mutation rate", "Mutation strength", "Crossover rate",
                                          "Number of generations", "Tournament size", "Seed", "Best fitness value", "Average fitness value"])
+    print("Task 1")
     print(task1_table)
 
 
     #Task 2.1 - influence of random seed
     task2_experiments = [
-        # Experiment 0 #TODO
         GeneticAlgorithm(
             population_size=1000,
-            mutation_rate=0.2,
-            mutation_strength=10,
+            mutation_rate=0.1,
+            mutation_strength=5,
             crossover_rate=0.3,
-            num_generations=30,
+            num_generations=21,
             tournament_size=30
         ),
         GeneticAlgorithm(
             population_size=1000,
-            mutation_rate=0.2,
-            mutation_strength=10,
+            mutation_rate=0.1,
+            mutation_strength=5,
             crossover_rate=0.3,
-            num_generations=30,
+            num_generations=21,
             tournament_size=30
         ),
         GeneticAlgorithm(
             population_size=1000,
-            mutation_rate=0.2,
-            mutation_strength=10,
+            mutation_rate=0.1,
+            mutation_strength=5,
             crossover_rate=0.3,
-            num_generations=30,
+            num_generations=21,
             tournament_size=30
         ),
-        #TODO 0, 1, 2, 3, 4
+        GeneticAlgorithm(
+            population_size=1000,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.3,
+            num_generations=21,
+            tournament_size=30
+        ),
+        GeneticAlgorithm(
+            population_size=1000,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.3,
+            num_generations=21,
+            tournament_size=30
+        ),
     ]
 
-    task2_results = [compute_and_prepeare_plots(task2_experiments[i], index=2, seed=i, legend=f"Random seed = {i}") for i in range (0, len(task2_experiments))]
+    task2_results = [compute_and_prepeare_plots(task2_experiments[i], index=21, seed=pow(17*i, 2) + i + 1, legend=f"Random seed = {pow(17*i, 2) + i + 1}") for i in range (0, len(task2_experiments))]
     task2_table = pd.DataFrame(task2_results, index=range(0, len(task2_results)),
                                columns=["Population size", "Mutation rate", "Mutation strength", "Crossover rate",
                                         "Number of generations", "Tournament size", "Seed", "Best fitness value", "Average fitness value"])
+    print("Task 2.1")
     print(task2_table)
 
     #TODO: Find best solution across all seeds and its fitness value
     #TODO: Make an average across best fitness values of all seeds and compute standard deviation
 
     #Task 2.2 - influence of decreasing population size
+    task2_2_experiments = [
+        GeneticAlgorithm(
+            population_size=1000,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.3,
+            num_generations=21,
+            tournament_size=30
+        ),
+        GeneticAlgorithm(
+            population_size=500,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.3,
+            num_generations=21,
+            tournament_size=30
+        ),
+        GeneticAlgorithm(
+            population_size=250,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.3,
+            num_generations=21,
+            tournament_size=30
+        ),
+        GeneticAlgorithm(
+            population_size=100,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.3,
+            num_generations=21,
+            tournament_size=30
+        )
+    ]
 
-    #TODO: run algorithm with 50%, 25%, 10% of original population size
-
-
+    task2_2_results = [compute_and_prepeare_plots(task2_2_experiments[i], index=22, legend=f"Experiment {i}") for i in range (0, len(task2_2_experiments))]
+    task2_2_table = pd.DataFrame(task2_2_results, index=range(0, len(task2_2_results)),
+                               columns=["Population size", "Mutation rate", "Mutation strength", "Crossover rate",
+                                        "Number of generations", "Tournament size", "Seed", "Best fitness value", "Average fitness value"])
+    print("Task 2.2")
+    print(task2_2_table)
 
     #Task 3 - impact of crossover rate
 
-    #TODO: Plot the best and average fitness across generations
+    task3_experiments = [
+        GeneticAlgorithm(
+            population_size=1000,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.3,
+            num_generations=21,
+            tournament_size=30
+        ),
+        GeneticAlgorithm(
+            population_size=1000,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.4,
+            num_generations=21,
+            tournament_size=30
+        ),
+        GeneticAlgorithm(
+            population_size=1000,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.2,
+            num_generations=21,
+            tournament_size=30
+        )
+    ]
+
+    task3_results = [compute_and_prepeare_plots(task3_experiments[i], index=3, legend=f"Experiment {i}") for i in range (0, len(task3_experiments))]
+    task3_table = pd.DataFrame(task3_results, index=range(0, len(task3_results)),
+                               columns=["Population size", "Mutation rate", "Mutation strength", "Crossover rate",
+                                        "Number of generations", "Tournament size", "Seed", "Best fitness value", "Average fitness value"])
+
+    print("Task 3")
+    print(task3_table)
+
     #TODO: Make an average across best fitness values of more than one seed
     plt.show()
 
