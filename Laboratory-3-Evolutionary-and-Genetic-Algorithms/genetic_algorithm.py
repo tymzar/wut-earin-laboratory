@@ -85,8 +85,4 @@ class GeneticAlgorithm:
             offspring = self.crossover(parents_for_reproduction)
             population = self.mutate(offspring)
 
-
-
-            # TODO compute fitness of the new generation and save the best solution, best fitness and average fitness
-
         return best_solutions, best_fitness_values, average_fitness_values
