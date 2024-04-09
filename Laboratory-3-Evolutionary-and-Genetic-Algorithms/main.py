@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     #Task 1 - finding best parameters
     task1_experiments = [
-        # Experiment 0 #TODO
+        # Experiment 0
         GeneticAlgorithm(
             population_size=1000,
             mutation_rate=0.2,
@@ -48,15 +48,105 @@ if __name__ == "__main__":
             num_generations=30,
             tournament_size=30
         ),
-        # Experiment 1 #TODO
+        # Experiment 1
         GeneticAlgorithm(
-            population_size=500,
-            mutation_rate=0.2,
+            population_size=1000,
+            mutation_rate=0.1,
             mutation_strength=10,
             crossover_rate=0.3,
             num_generations=30,
             tournament_size=30
-        )
+        ),
+        # Experiment 2
+        GeneticAlgorithm(
+            population_size=1000,
+            mutation_rate=0.05,
+            mutation_strength=10,
+            crossover_rate=0.3,
+            num_generations=30,
+            tournament_size=30
+        ),
+        # Experiment 3
+        GeneticAlgorithm(
+            population_size=1000,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.3,
+            num_generations=30,
+            tournament_size=30
+        ),
+        # Experiment 4
+        GeneticAlgorithm(
+            population_size=1000,
+            mutation_rate=0.1,
+            mutation_strength=2,
+            crossover_rate=0.3,
+            num_generations=30,
+            tournament_size=30
+        ),
+        # Experiment 5
+        GeneticAlgorithm(
+            population_size=1000,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.4,
+            num_generations=30,
+            tournament_size=30
+        ),
+        # Experiment 6
+        GeneticAlgorithm(
+            population_size=1000,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.2,
+            num_generations=30,
+            tournament_size=30
+        ),
+        # Experiment 7
+        GeneticAlgorithm(
+            population_size=1000,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.3,
+            num_generations=30,
+            tournament_size=20
+        ),
+        # Experiment 8
+        GeneticAlgorithm(
+            population_size=1000,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.3,
+            num_generations=30,
+            tournament_size=40
+        ),
+        # Experiment 9
+        GeneticAlgorithm(
+            population_size=2000,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.3,
+            num_generations=30,
+            tournament_size=30
+        ),
+        # Experiment 10
+        GeneticAlgorithm(
+            population_size=500,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.3,
+            num_generations=30,
+            tournament_size=30
+        ),
+        # Experiment 11
+        GeneticAlgorithm(
+            population_size=1000,
+            mutation_rate=0.1,
+            mutation_strength=5,
+            crossover_rate=0.3,
+            num_generations=21,
+            tournament_size=30
+        ),
     ]
     
     
