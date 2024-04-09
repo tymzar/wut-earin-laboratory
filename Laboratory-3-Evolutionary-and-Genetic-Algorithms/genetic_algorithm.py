@@ -35,10 +35,10 @@ class GeneticAlgorithm:
     def initialize_population(self):
         return [(random.uniform(*init_ranges[rosenbrock_2d][0]), random.uniform(*init_ranges[rosenbrock_2d][1])) for _ in range(self.population_size)]
 
-    def evaluate_population(self, population) -> ...:
+    def evaluate_population(self, population):
         return [(rosenbrock_2d(*individual)) for individual in population]
 
-    def selection(self, population, fitness_values) -> ...:
+    def selection(self, population, fitness_values):
         data = list(zip(population, fitness_values))
         return [min(random.sample(data, self.tournament_size), key=lambda sample: sample[1])[0] for _ in range(self.population_size)]
 
@@ -60,7 +60,7 @@ class GeneticAlgorithm:
     def mutate(self, individuals):
         return [(individual[0] + self.__mutation_value(), individual[1] + self.__mutation_value()) for individual in individuals]
 
-    def evolve(self, seed: int) -> ...:
+    def evolve(self, seed: int):
         # Run the genetic algorithm and return the lists that contain the best solution for each generation,
         #   the best fitness for each generation and average fitness for each generation
         set_seed(seed)
