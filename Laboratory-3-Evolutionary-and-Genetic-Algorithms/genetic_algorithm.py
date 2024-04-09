@@ -1,6 +1,5 @@
 import random
-from numpy import random as numpy_random, nan
-from pandas import isna
+from numpy import random as numpy_random
 from typing import Tuple
 from functions import init_ranges
 from functions import rosenbrock_2d
