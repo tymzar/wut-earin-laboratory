@@ -15,8 +15,6 @@ if __name__ == "__main__":
     population = ga.initialize_population()
     fitness = ga.evaluate_population(population=population)
 
-    # print(str(population))
-    print(str(ga.selection(population, fitness)))
     best_solutions, best_fitness_values, average_fitness_values = ga.evolve(seed=1)
 
     figure, axis = plt.subplots(2, 2)
@@ -39,5 +37,3 @@ if __name__ == "__main__":
     axis[1, 1].set_yscale("log")
     axis[1, 1].set_xlabel("Generation")
     plt.show()
-
-    # print(f'Best solutions: ${best_solutions}. Best fitness: ${best_fitness_values} average fitness_values: ${average_fitness_values}')
