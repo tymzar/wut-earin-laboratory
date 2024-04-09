@@ -10,7 +10,7 @@ def compute_and_prepeare_plots(ga: GeneticAlgorithm, index: int, seed=1, legend=
     if len(figure.get_axes()) == 0:
         figure.subplots(2, 2)
     axis = figure.get_axes()
-    figure.canvas.manager.set_window_title(f"Experiment {index}")
+    figure.canvas.manager.set_window_title(f"Task {index}")
 
     axis[0].plot(range(0, ga.num_generations), list(map(lambda sol: sol[0], best_solutions)), label=legend)
     axis[0].set_title("Best solutions X")
@@ -49,7 +49,7 @@ if __name__ == "__main__":
         ),
         # Experiment 1 #TODO
         GeneticAlgorithm(
-            population_size=1000,
+            population_size=500,
             mutation_rate=0.2,
             mutation_strength=10,
             crossover_rate=0.3,
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     ]
     
     
-    task1_results = [compute_and_prepeare_plots(task1_experiments[i], 100+i) for i in range (0, len(task1_experiments))]
+    task1_results = [compute_and_prepeare_plots(task1_experiments[i], 1, legend=f"Experiment {i}") for i in range (0, len(task1_experiments))]
     task1_table = pd.DataFrame(task1_results, index=range(0, len(task1_results)), columns=["Population size", "Mutation rate", "Mutation strength", "Crossover rate", "Number of generations", "Tournament size", "Seed", "Best fitness value", "Average fitness value"])
     print(task1_table)
 
@@ -94,7 +94,7 @@ if __name__ == "__main__":
         #TODO 0, 1, 2, 3, 4
     ]
 
-    task2_results = [compute_and_prepeare_plots(task2_experiments[i], 200, seed=i, legend=f"Random seed = {i}") for i in range (0, len(task2_experiments))]
+    task2_results = [compute_and_prepeare_plots(task2_experiments[i], 2, seed=i, legend=f"Random seed = {i}") for i in range (0, len(task2_experiments))]
     task2_table = pd.DataFrame(task2_results, index=range(0, len(task2_results)), columns=["Population size", "Mutation rate", "Mutation strength", "Crossover rate", "Number of generations", "Tournament size", "Seed", "Best fitness value", "Average fitness value"])
     print(task2_table)
 
