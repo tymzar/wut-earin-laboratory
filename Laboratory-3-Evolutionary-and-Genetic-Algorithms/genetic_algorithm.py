@@ -1,7 +1,8 @@
 import random
-from numpy import random as numpy_random, nan
-from pandas import isna
+from numpy import random as numpy_random
 from typing import Tuple
+from functions import init_ranges
+from functions import rosenbrock_2d
 
 
 def set_seed(seed: int) -> None:
@@ -10,8 +11,7 @@ def set_seed(seed: int) -> None:
     numpy_random.seed(seed)
 
 
-ValueRange = Tuple[int, int]
-BinaryIndividual = list[int]
+Population = list[Tuple[float, float]]
 
 
 class GeneticAlgorithm:
@@ -22,86 +22,158 @@ class GeneticAlgorithm:
         mutation_strength: float,
         crossover_rate: float,
         num_generations: int,
+        tournament_size: int = 5,
     ):
         self.population_size = population_size
         self.mutation_rate = mutation_rate
         self.mutation_strength = mutation_strength
         self.crossover_rate = crossover_rate
         self.num_generations = num_generations
+        self.tournament_size = tournament_size
 
-    def decode_binary_to_decimal(
-        self, value_range: ValueRange, number_of_bits: int, individual: BinaryIndividual
-    ) -> int:
+    def initialize_population(self) -> Population:
+        """Initializes the population with random values within the given ranges.
 
-        if len(individual) != number_of_bits:
-            raise ValueError(
-                f"Individual length ({len(individual)}) does not match the number of bits ({number_of_bits})"
+        Returns:
+            list[Tuple[float, float]]: The population of individuals.
+        """
+
+        population = []
+        for _ in range(self.population_size):
+            individual = (
+                random.uniform(*init_ranges[rosenbrock_2d][0]),
+                random.uniform(*init_ranges[rosenbrock_2d][1]),
             )
-        if len(value_range) != 2:
-            raise ValueError("Value range must contain two values")
+            population.append(individual)
+        return population
 
-        lower_bound, upper_bound = value_range
+    def evaluate_population(self, population: Population) -> list[float]:
+        """Evaluates the fitness of each individual in the population.
 
-        if lower_bound >= upper_bound:
-            raise ValueError("Lower bound must be smaller than upper bound")
+        Args:
+            population (list[Tuple[float, float]]): The population of individuals.
 
-        decoded_value = nan
-        largest_value = 2**number_of_bits - 1
+        Returns:
+            list[float]: The fitness values of the individuals in the population.
+        """
 
-        binary_characters = "".join(str(bit) for bit in individual)
-        integer_value = int(binary_characters, 2)
+        return [(rosenbrock_2d(*individual)) for individual in population]
 
-        decoded_value = lower_bound + (integer_value / largest_value) * (
-            upper_bound - lower_bound
-        )
+    def selection(
+        self, population: Population, fitness_values: list[float]
+    ) -> list[Tuple[float, float]]:
+        """Performs tournament selection on the population.
 
-        if decoded_value < lower_bound or decoded_value > upper_bound:
-            raise ValueError(
-                f"Decoded value ({decoded_value}) is out of the value range ({value_range})"
-            )
+        Args:
+            population (list[Tuple[float, float]]): The population of individuals.
+            fitness_values (list[float]): The fitness values of the individuals in the population.
 
-        if isna(decoded_value):
-            raise ValueError("Decoded value is not a number")
+        Returns:
+            list[Tuple[float, float]]: The selected individuals.
+        """
 
-        return decoded_value
+        # Zip population and fitness_values into a list of tuples
+        population_with_fitness = list(zip(population, fitness_values))
 
-    def initialize_population(self) -> ...:
-        # TODO Initialize the population and return the result
-        ...
+        # Function to perform a single tournament selection
+        def tournament_selection():
+            # Randomly sample self.tournament_size individuals
+            sample = random.sample(population_with_fitness, self.tournament_size)
+            # Select the individual with the smallest fitness value
+            winner = min(sample, key=lambda individual: individual[1])
+            return winner[0]
 
-    def evaluate_population(self, population) -> ...:
-        # TODO Evaluate the fitness of the population and return the values for each individual in the population
-        ...
+        # Perform self.population_size tournament selections
+        selected_population = [
+            tournament_selection() for _ in range(self.population_size)
+        ]
+        return selected_population
 
-    def selection(self, population, fitness_values) -> ...:
-        # TODO Implement selection mechanism and return the selected individuals
-        pass
+    def crossover(self, parents: Population) -> Population:
+        """Performs crossover on the selected parents to generate offspring.
 
-    def crossover(self, parents) -> ...:
-        # TODO Implement the crossover mechanism over the parents and return the offspring
-        ...
+        Args:
+            parents (Population): The selected parents.
 
-    def mutate(self, individuals) -> ...:
-        # TODO Implement mutation mechanism over the given individuals and return the results
-        ...
+        Returns:
+            Population: The offspring generated by crossover.
+        """
 
-    def evolve(self, seed: int) -> ...:
-        # Run the genetic algorithm and return the lists that contain the best solution for each generation,
-        #   the best fitness for each generation and average fitness for each generation
+        offspring = []
+
+        def create_offspring(parent1, parent2):
+            alpha = self.crossover_rate
+            blend = lambda p1, p2: alpha * p1 + (1 - alpha) * p2
+            first_child = tuple(blend(p1, p2) for p1, p2 in zip(parent1, parent2))
+            second_child = tuple(blend(p2, p1) for p1, p2 in zip(parent1, parent2))
+
+            return first_child, second_child
+
+        for index in range(0, len(parents), 2):
+            first_parent = parents[index]
+            second_parent = parents[index + 1]
+            first_child, second_child = create_offspring(first_parent, second_parent)
+            offspring.extend([first_child, second_child])
+
+        return offspring
+
+    def mutate(self, individuals: Population) -> Population:
+        """Mutates the individuals in the population.
+
+        Args:
+            individuals (Population): The population of individuals.
+
+        Returns:
+            Population: The mutated population of individuals.
+        """
+
+        def mutation_value():
+            return random.choices([0, 1], [1 - self.mutation_rate, self.mutation_rate])[
+                0
+            ] * random.gauss(0, self.mutation_strength)
+
+        def mutate_individual(individual):
+            return tuple(gene + mutation_value() for gene in individual)
+
+        return [mutate_individual(individual) for individual in individuals]
+
+    def evolve(
+        self, seed: int
+    ) -> Tuple[list[Tuple[float, float]], list[float], list[float]]:
+        """Evolve the population for a given number of generations.
+
+        Args:
+            seed (int): The random seed to use for reproducibility.
+
+        Returns:
+            Tuple[list[Tuple[float, float]], list[float], list[float]]: The best solution, best fitness and average fitness for each generation.
+        """
+
         set_seed(seed)
 
         population = self.initialize_population()
 
-        best_solutions = []
-        best_fitness_values = []
-        average_fitness_values = []
+        def get_best_solution(population, fitness_values):
+            best_fitness = min(fitness_values)
+            best_solution = population[fitness_values.index(best_fitness)]
+            return best_solution, best_fitness
 
-        for generation in range(self.num_generations):
+        def get_average_fitness(fitness_values):
+            return sum(fitness_values) / len(fitness_values)
+
+        best_solutions, best_fitness_values, average_fitness_values = [], [], []
+        for _ in range(self.num_generations):
             fitness_values = self.evaluate_population(population)
+
+            best_solution, best_fitness = get_best_solution(population, fitness_values)
+            average_fitness = get_average_fitness(fitness_values)
+
+            best_solutions.append(best_solution)
+            best_fitness_values.append(best_fitness)
+            average_fitness_values.append(average_fitness)
+
             parents_for_reproduction = self.selection(population, fitness_values)
             offspring = self.crossover(parents_for_reproduction)
             population = self.mutate(offspring)
-
-            # TODO compute fitness of the new generation and save the best solution, best fitness and average fitness
 
         return best_solutions, best_fitness_values, average_fitness_values
