@@ -147,14 +147,11 @@ def experiment_2_1():
         best_solution = table_data.loc[table_data["Best fitness value"].idxmin()]
         return best_solution
 
-    def get_best_average_fitness(table_data):
-        best_average_fitness = table_data.loc[
-            table_data["Average fitness value"].idxmin()
-        ]
-        return best_average_fitness
-
+    def get_average_of_best_fitness(table_data):
+        return table_data["Best fitness value"].mean()
+           
     best_solution = get_best_solution(table)
-    best_average_fitness = get_best_average_fitness(table)
+    best_average_fitness = get_average_of_best_fitness(table)
 
     def compute_standard_deviation(table_data):
         return table_data["Best fitness value"].std()
