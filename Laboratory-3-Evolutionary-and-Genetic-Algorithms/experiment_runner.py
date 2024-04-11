@@ -4,8 +4,26 @@ import pandas as pd
 from expermient_data import experiment_parameters1
 
 
-def compute_and_prepeare_plots(ga: GeneticAlgorithm, index: str, seed=1, legend=""):
+def compute_and_prepeare_plots(
+    ga: GeneticAlgorithm, index: str, seed=1, legend="", should_plot=True
+):
+
     best_solutions, best_fitness_values, average_fitness_values = ga.evolve(seed=seed)
+
+    if not should_plot:
+        return [
+            ga.population_size,
+            ga.mutation_rate,
+            ga.mutation_strength,
+            ga.crossover_rate,
+            ga.num_generations,
+            ga.tournament_size,
+            seed,
+            best_fitness_values[-1],
+            average_fitness_values[-1],
+            best_solutions[-1][0],
+            best_solutions[-1][1],
+        ]
 
     figure = plt.figure(index, figsize=(12, 10))
 
@@ -51,7 +69,8 @@ def compute_and_prepeare_plots(ga: GeneticAlgorithm, index: str, seed=1, legend=
         seed,
         best_fitness_values[-1],
         average_fitness_values[-1],
-        best_solutions[-1],
+        best_solutions[-1][0],
+        best_solutions[-1][1],
     ]
 
 
@@ -95,7 +114,8 @@ def experiment_1():
             "Seed",
             "Best fitness value",
             "Average fitness value",
-            "Best solution",
+            "Best solution - X",
+            "Best solution - Y",
         ],
     )
 
@@ -139,7 +159,8 @@ def experiment_2_1():
             "Seed",
             "Best fitness value",
             "Average fitness value",
-            "Best solution",
+            "Best solution - X",
+            "Best solution - Y",
         ],
     )
 
@@ -149,7 +170,7 @@ def experiment_2_1():
 
     def get_average_of_best_fitness(table_data):
         return table_data["Best fitness value"].mean()
-           
+
     best_solution = get_best_solution(table)
     best_average_fitness = get_average_of_best_fitness(table)
 
@@ -200,7 +221,8 @@ def experiment_2_2():
             "Seed",
             "Best fitness value",
             "Average fitness value",
-            "Best solution",
+            "Best solution - X",
+            "Best solution - Y",
         ],
     )
 
@@ -218,39 +240,51 @@ def experiment_3():
             num_generations=21,
             tournament_size=30,
         )
-        for crossover_rate in [0.3, 0.4, 0.2]
+        for crossover_rate in [0.2, 0.3, 0.4, 0.6, 0.9]
     ]
 
-    results = [
-        compute_and_prepeare_plots(
-            experiments[i],
-            index="3",
-            legend=f"Experiment {i}",
+    amount_of_seeds = 5
+
+    seed_results = [
+        [
+            compute_and_prepeare_plots(
+                experiments[i],
+                index="3." + str(index),
+                seed=pow(17 * index, 2) + index + 1,
+                legend=f"Experiment {i}",
+            )
+            for i in range(len(experiments))
+        ]
+        for index in range(amount_of_seeds)
+    ]
+
+    print("Length of seed results: ", len(seed_results))
+
+    tables = [
+        pd.DataFrame(
+            seed_results[index],
+            index=range(len(seed_results[index])),
+            columns=[
+                "Population size",
+                "Mutation rate",
+                "Mutation strength",
+                "Crossover rate",
+                "Number of generations",
+                "Tournament size",
+                "Seed",
+                "Best fitness value",
+                "Average fitness value",
+                "Best solution - X",
+                "Best solution - Y",
+            ],
         )
-        for i in range(len(experiments))
+        for index in range(len(seed_results))
     ]
 
-    table = pd.DataFrame(
-        results,
-        index=range(len(results)),
-        columns=[
-            "Population size",
-            "Mutation rate",
-            "Mutation strength",
-            "Crossover rate",
-            "Number of generations",
-            "Tournament size",
-            "Seed",
-            "Best fitness value",
-            "Average fitness value",
-            "Best solution",
-        ],
-    )
-
-    # TODO: Make an average across best fitness values of more than one seed
+    average_table = pd.concat(tables).groupby(level=0).mean()
 
     print("Task 3")
-    print(table)
+    print(average_table)
 
 
 def experiment_4_1():
@@ -268,35 +302,48 @@ def experiment_4_1():
         for index in range(len(mutation_rate_increase))
     ]
 
-    results = [
-        compute_and_prepeare_plots(
-            experiments[i],
-            seed=pow(17 * i, 2) + i + 1,
-            index="4.1",
-            legend=f"Experiment {i}",
-        )
-        for i in range(len(experiments))
+    amount_of_seeds = 5
+
+    seeds = [pow(17 * i, 2) + i + 1 for i in range(amount_of_seeds)]
+
+    seeds_results = [
+        [
+            compute_and_prepeare_plots(
+                experiments[i],
+                seed=seeds[index],
+                index="4.1." + str(index),
+                legend=f"Experiment {i}",
+            )
+            for i in range(len(experiments))
+        ]
+        for index in range(amount_of_seeds)
     ]
 
-    table = pd.DataFrame(
-        results,
-        index=range(len(results)),
-        columns=[
-            "Population size",
-            "Mutation rate",
-            "Mutation strength",
-            "Crossover rate",
-            "Number of generations",
-            "Tournament size",
-            "Seed",
-            "Best fitness value",
-            "Average fitness value",
-            "Best solution",
-        ],
-    )
+    tables = [
+        pd.DataFrame(
+            seeds_results[index],
+            index=range(len(seeds_results[index])),
+            columns=[
+                "Population size",
+                "Mutation rate",
+                "Mutation strength",
+                "Crossover rate",
+                "Number of generations",
+                "Tournament size",
+                "Seed",
+                "Best fitness value",
+                "Average fitness value",
+                "Best solution - X",
+                "Best solution - Y",
+            ],
+        )
+        for index in range(len(seeds_results))
+    ]
+
+    average_table = pd.concat(tables).groupby(level=0).mean()
 
     print("Task 4.1")
-    print(table)
+    print(average_table)
 
 
 def experiment_4_2():
@@ -314,43 +361,55 @@ def experiment_4_2():
         for index in range(len(mutation_strength_increase))
     ]
 
-    results = [
-        compute_and_prepeare_plots(
-            experiments[i],
-            seed=pow(17 * i, 2) + i + 1,
-            index="4.2",
-            legend=f"Experiment {i}",
-        )
-        for i in range(len(experiments))
+    number_of_seeds = 5
+
+    seeds_results = [
+        [
+            compute_and_prepeare_plots(
+                experiments[i],
+                seed=pow(17 * index, 2) + index + 1,
+                index="4.2." + str(index),
+                legend=f"Experiment {i}",
+            )
+            for i in range(len(experiments))
+        ]
+        for index in range(number_of_seeds)
     ]
 
-    table = pd.DataFrame(
-        results,
-        index=range(len(results)),
-        columns=[
-            "Population size",
-            "Mutation rate",
-            "Mutation strength",
-            "Crossover rate",
-            "Number of generations",
-            "Tournament size",
-            "Seed",
-            "Best fitness value",
-            "Average fitness value",
-            "Best solution",
-        ],
-    )
+    tables = [
+        pd.DataFrame(
+            seeds_results[index],
+            index=range(len(seeds_results[index])),
+            columns=[
+                "Population size",
+                "Mutation rate",
+                "Mutation strength",
+                "Crossover rate",
+                "Number of generations",
+                "Tournament size",
+                "Seed",
+                "Best fitness value",
+                "Average fitness value",
+                "Best solution - X",
+                "Best solution - Y",
+            ],
+        )
+        for index in range(len(seeds_results))
+    ]
+
+    average_table = pd.concat(tables).groupby(level=0).mean()
 
     print("Task 4.2")
-    print(table)
+    print(average_table)
 
 
 def runner():
 
     experiment_1()
+
     experiment_2_1()
     experiment_2_2()
-    # Task 3 - impact of crossover rate
+
     experiment_3()
 
     experiment_4_1()
