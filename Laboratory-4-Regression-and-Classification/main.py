@@ -2,13 +2,22 @@ import random
 
 import numpy as np
 from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn import linear_model
+from sklearn.svm import SVR
+from sklearn import preprocessing
+from sklearn.ensemble import RandomForestRegressor
 
 from datasets import load_dataset
-
+import matplotlib.pyplot as plt
+import pandas as pd
 
 def set_seed(seed):
     random.seed(seed)
     np.random.seed(seed)
+
+def preprocess_dataset(X: pd.DataFrame):
+    X = X.drop(columns=["AveOccup","Population"])
+    return X
 
 
 if __name__ == "__main__":
@@ -16,8 +25,9 @@ if __name__ == "__main__":
     seed = 0
     set_seed(seed)
 
-    # TODO Load and preprocess dataset
-    X, y = load_dataset(...)
+    # TODO Preprocess dataset
+    X, y = load_dataset("california_housing")
+    X = preprocess_dataset(X)
     ...
 
     # Split data into train and test partitions with 80% train and 20% test
@@ -26,12 +36,14 @@ if __name__ == "__main__":
     )
 
     # TODO Define the models
-    model1 = ...
-    model2 = ...
+    model1 = linear_model.LinearRegression()
+    # model2 = SVR(degree=6, kernel="poly")
+    model2 = RandomForestRegressor()
 
     # TODO evaluate model using cross-validation
-    scores1 = cross_val_score(model1, X_train, y_train, cv=4, scoring=...)
-    scores2 = cross_val_score(model2, X_train, y_train, cv=4, scoring=...)
+    scores1 = cross_val_score(model1, X_train, y_train, cv=4)
+    # scores2 = cross_val_score(model2, X_train, y_train, cv=4, scoring=...)
+    scores2 = cross_val_score(model2, X_train, y_train, cv=4)
 
     # Fit the best model on the entire training set and get the predictions
     final_model1 = model1.fit(X_train, y_train)
@@ -39,6 +51,15 @@ if __name__ == "__main__":
 
     predictions1 = final_model1.predict(X_test)
     predictions2 = final_model2.predict(X_test)
+
+    print(scores1)
+    print(scores2)
+
+    plt.scatter(range(0, len(y_test)), y_test)
+    plt.scatter(range(0, len(predictions1)), predictions1)
+    plt.scatter(range(0, len(predictions2)), predictions2)
+    plt.show()
+
 
     # TODO Evaluate the final predictions with the metric of your choice
     ...
