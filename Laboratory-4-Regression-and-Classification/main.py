@@ -28,6 +28,7 @@ if __name__ == "__main__":
     # TODO Preprocess dataset
     X, y = load_dataset("california_housing")
     X = preprocess_dataset(X)
+
     ...
 
     # Split data into train and test partitions with 80% train and 20% test
@@ -35,15 +36,18 @@ if __name__ == "__main__":
         X, y, test_size=0.2, random_state=seed
     )
 
+    scaler = preprocessing.StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
+
     # TODO Define the models
     model1 = linear_model.LinearRegression()
     # model2 = SVR(degree=6, kernel="poly")
     model2 = RandomForestRegressor()
 
     # TODO evaluate model using cross-validation
-    scores1 = cross_val_score(model1, X_train, y_train, cv=4)
-    # scores2 = cross_val_score(model2, X_train, y_train, cv=4, scoring=...)
-    scores2 = cross_val_score(model2, X_train, y_train, cv=4)
+    scores1 = cross_val_score(model1, X_train, y_train, cv=4, scoring='neg_mean_squared_error')
+    scores2 = cross_val_score(model2, X_train, y_train, cv=4, scoring='neg_mean_squared_error')
 
     # Fit the best model on the entire training set and get the predictions
     final_model1 = model1.fit(X_train, y_train)
