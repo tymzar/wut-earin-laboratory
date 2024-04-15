@@ -6,6 +6,7 @@ from sklearn import linear_model
 from sklearn.svm import SVR
 from sklearn import preprocessing
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import r2_score
 
 from datasets import load_dataset
 import matplotlib.pyplot as plt
@@ -56,8 +57,8 @@ if __name__ == "__main__":
     predictions1 = final_model1.predict(X_test)
     predictions2 = final_model2.predict(X_test)
 
-    print(scores1)
-    print(scores2)
+    print(r2_score(y_test, predictions1))
+    print(r2_score(y_test, predictions2))
 
     plt.scatter(range(0, len(y_test)), y_test)
     plt.scatter(range(0, len(predictions1)), predictions1)
