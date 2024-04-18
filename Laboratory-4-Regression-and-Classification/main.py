@@ -108,7 +108,7 @@ def main(
 
     # START - PCA analysis
     if pca_analysis:
-        perform_pca_analysis(X)
+        perform_pca_analysis(X_train)
     X_pca_train, X_pca_test = pca_transform(X_train, X_test, 7)
     # END - PCA analysis
 
