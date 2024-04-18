@@ -62,7 +62,7 @@ def estimate_model(
     )
 
     print(
-        f"Model {model.__class__.__name__} CV scores: {cv_scores}, mean: {np.mean(cv_scores)}, std: {np.std(cv_scores)}\n"
+        f"Model {model.__class__.__name__} CV scores: {cv_scores}, mean: {cv_scores.mean()}, std: {cv_scores.std()}\n"
     )
 
     return cv_scores
@@ -177,7 +177,7 @@ def main(
                                 model, X_train, y_train
                             )
 
-                            score_mean = np.mean(score)
+                            score_mean = score.mean()
                             if(parameter not in scores or score_mean > scores[parameter][0]):
                                 scores[parameter] = (score_mean, value)
                             else:
@@ -202,9 +202,9 @@ def main(
 
         linear_regression_predictions = predict_using_model(
             final_liner_regression,
-            X_train,
+            X_preprocessed_train,
             y_train,
-            X_test,
+            X_preprocessed_test,
             y_test,
         )
 
