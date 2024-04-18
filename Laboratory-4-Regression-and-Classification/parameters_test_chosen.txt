@@ -1,0 +1,84 @@
+Dataset: Full dataset
+
+Parameter: n_estimators, value: 500
+Model RandomForestRegressor CV scores: [-0.27836764 -0.27341529 -0.25610048 -0.25189842], mean: -0.26494545723120716, std: 0.011184274441537826
+Model RandomForestRegressor MSE: 0.2592150337601365, R2: 0.8012085898829946
+
+Parameter: criterion, value: absolute_error
+Model RandomForestRegressor CV scores: [-0.30437686 -0.29068158 -0.29249569 -0.28188475], mean: -0.29235971898174357, std: 0.008015162021494224
+Model RandomForestRegressor MSE: 0.2818642796739607, R2: 0.7838389355539858
+
+Parameter: criterion, value: squared_error
+Model RandomForestRegressor CV scores: [-0.31143075 -0.31155306 -0.28101902 -0.29609656], mean: -0.30002484537228075, std: 0.012645624183928778
+Model RandomForestRegressor MSE: 0.28635382782373686, R2: 0.7803959114572119
+
+Parameter: max_depth, value: 100
+Model RandomForestRegressor CV scores: [-0.31104525 -0.29958152 -0.2936922  -0.28933054], mean: -0.2984123778422228, std: 0.008150403919491409
+Model RandomForestRegressor MSE: 0.2816286407576223, R2: 0.7840196464941571
+
+Parameter: min_samples_split, value: 10
+Model RandomForestRegressor CV scores: [-0.3199629  -0.33638551 -0.30355742 -0.2950574 ], mean: -0.31374080771434637, std: 0.015845092703058034
+Model RandomForestRegressor MSE: 0.31361841774303933, R2: 0.759486760480516
+
+Parameter: min_samples_split, value: 2
+Model RandomForestRegressor CV scores: [-0.32774895 -0.31383612 -0.30306177 -0.30350731], mean: -0.31203853739937754, std: 0.010042564198886963
+Model RandomForestRegressor MSE: 0.3124412504797308, R2: 0.7603895273332797
+
+Finished model: RandomForestRegressor with parameter: min_samples_split
+
+
+
+
+
+
+
+
+Dataset: PCA dataset
+
+Parameter: n_estimators, value: 500
+Model RandomForestRegressor CV scores: [-0.32880474 -0.33663602 -0.32249658 -0.30515612], mean: -0.32327336643652, std: 0.011597356081577274
+Model RandomForestRegressor MSE: 0.31919240466804644, R2: 0.7552120827941081
+
+Parameter: criterion, value: friedman_mse
+Model RandomForestRegressor CV scores: [-0.34498545 -0.35391241 -0.34088264 -0.32219944], mean: -0.3404949815610892, std: 0.011565778320407965
+Model RandomForestRegressor MSE: 0.3363837384965156, R2: 0.7420280886253288
+
+Parameter: max_depth, value: 100
+Model RandomForestRegressor CV scores: [-0.33850152 -0.33818291 -0.32324935 -0.31755021], mean: -0.3293709981244932, std: 0.009195404587897207
+Model RandomForestRegressor MSE: 0.32333193839788615, R2: 0.7520374839467927
+
+Parameter: min_samples_split, value: 2
+Model RandomForestRegressor CV scores: [-0.34741365 -0.35239214 -0.33822191 -0.31900739], mean: -0.3392587725333184, std: 0.012749322667060537
+Model RandomForestRegressor MSE: 0.33495220915684615, R2: 0.7431259251663995
+
+Finished model: RandomForestRegressor with parameter: min_samples_split
+
+
+
+Dataset: Preprocessed dataset
+
+Parameter: n_estimators, value: 500
+Model RandomForestRegressor CV scores: [-0.32594782 -0.32338589 -0.31537157 -0.28112156], mean: -0.31145671109578216, std: 0.01794327984901464
+Model RandomForestRegressor MSE: 0.3035743196811862, R2: 0.7671895560634175
+
+
+
+Parameter: criterion, value: absolute_error
+Model RandomForestRegressor CV scores: [-0.35712421 -0.31979197 -0.33326904 -0.28579522], mean: -0.32399511199376785, std: 0.025789731551466907
+Model RandomForestRegressor MSE: 0.3065367822658265, R2: 0.7649176503561103
+
+
+Parameter: max_depth, value: 1000
+Model RandomForestRegressor CV scores: [-0.31019488 -0.30031818 -0.28754414 -0.27237967], mean: -0.29260921873705314, std: 0.014173680644564608
+Model RandomForestRegressor MSE: 0.28201784204328345, R2: 0.7837211689279697
+
+Parameter: max_depth, value: 100
+Model RandomForestRegressor CV scores: [-0.3056379  -0.30423356 -0.29992626 -0.26573015], mean: -0.2938819668789539, std: 0.016389140734713446
+Model RandomForestRegressor MSE: 0.28547499151527345, R2: 0.7810698889904097
+
+
+Parameter: min_samples_split, value: 2
+Model RandomForestRegressor CV scores: [-0.35757635 -0.34343846 -0.32830857 -0.30818692], mean: -0.3343775758037813, std: 0.01832393039191825
+Model RandomForestRegressor MSE: 0.3115306053397513, R2: 0.7610878989858291
+
+Finished model: RandomForestRegressor with parameter: min_samples_split
