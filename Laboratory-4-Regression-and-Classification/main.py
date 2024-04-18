@@ -54,12 +54,8 @@ def pca_transform(train_dataset, test_dataset, number_of_components):
     return pca.fit_transform(train_dataset), pca.transform(test_dataset)
 
 
-def estimate_model(
-    model: LinearRegression | RandomForestRegressor, X_train, y_train
-):
-    cv_scores = cross_val_score(
-        model, X_train, y_train, cv=4, scoring="r2"
-    )
+def estimate_model(model: LinearRegression | RandomForestRegressor, X_train, y_train):
+    cv_scores = cross_val_score(model, X_train, y_train, cv=4, scoring="r2")
 
     print(
         f"Model {model.__class__.__name__} CV scores: {cv_scores}, mean: {cv_scores.mean()}, std: {cv_scores.std()}\n"
@@ -69,7 +65,7 @@ def estimate_model(
 
 
 def predict_using_model(
-            model: LinearRegression | RandomForestRegressor, X_train, y_train, X_test, y_test
+    model: LinearRegression | RandomForestRegressor, X_train, y_train, X_test, y_test
 ):
 
     final_model = model.fit(X_train, y_train)
@@ -81,6 +77,7 @@ def predict_using_model(
     )
 
     return predictions
+
 
 def main(
     should_test_parameters: bool = False,
@@ -127,9 +124,7 @@ def main(
         models = [
             {
                 "model": lambda: LinearRegression(n_jobs=16),
-                "parameters": [
-                    {"positive": [False, True]}
-                ],
+                "parameters": [{"positive": [False, True]}],
             },
             {
                 "model": lambda: RandomForestRegressor(n_jobs=16),
@@ -157,7 +152,6 @@ def main(
             X_train, y_train, X_test, y_test, name = dataset
             print(f"Dataset: {name}")
 
-
             for model_entry in models:
                 scores: dict[str, (float, any)] = {}
 
@@ -173,12 +167,13 @@ def main(
                             model = modelFunction()
                             model.set_params()
 
-                            score = estimate_model(
-                                model, X_train, y_train
-                            )
+                            score = estimate_model(model, X_train, y_train)
 
                             score_mean = score.mean()
-                            if(parameter not in scores or score_mean > scores[parameter][0]):
+                            if (
+                                parameter not in scores
+                                or score_mean > scores[parameter][0]
+                            ):
                                 scores[parameter] = (score_mean, value)
                             else:
                                 break
@@ -191,8 +186,8 @@ def main(
     if train_final_model:
         final_liner_regression = LinearRegression()
         final_random_forest = RandomForestRegressor(
-            n_jobs=16,
-            criterion="squared_error",
+            n_jobs=10,
+            criterion="absolute_error",
             max_depth=1000,
             min_samples_split=4,
             n_estimators=100,
