@@ -54,16 +54,23 @@ def pca_transform(train_dataset, test_dataset, number_of_components):
     return pca.fit_transform(train_dataset), pca.transform(test_dataset)
 
 
-def process_model(
-    model: LinearRegression | RandomForestRegressor, X_train, y_train, X_test, y_test
+def estimate_model(
+    model: LinearRegression | RandomForestRegressor, X_train, y_train
 ):
     cv_scores = cross_val_score(
-        model, X_train, y_train, cv=4, scoring="neg_mean_squared_error"
+        model, X_train, y_train, cv=4, scoring="r2"
     )
 
     print(
-        f"Model {model.__class__.__name__} CV scores: {cv_scores}, mean: {np.mean(cv_scores)}, std: {np.std(cv_scores)}"
+        f"Model {model.__class__.__name__} CV scores: {cv_scores}, mean: {np.mean(cv_scores)}, std: {np.std(cv_scores)}\n"
     )
+
+    return cv_scores
+
+
+def predict_using_model(
+            model: LinearRegression | RandomForestRegressor, X_train, y_train, X_test, y_test
+):
 
     final_model = model.fit(X_train, y_train)
 
@@ -73,8 +80,7 @@ def process_model(
         f"Model {model.__class__.__name__} MSE: {np.mean((predictions - y_test) ** 2)}, R2: {r2_score(y_test, predictions)}\n"
     )
 
-    return cv_scores, predictions
-
+    return predictions
 
 def main(
     should_test_parameters: bool = False,
@@ -120,17 +126,17 @@ def main(
     if should_test_parameters:
         models = [
             {
-                "model": LinearRegression(copy_X=True),
+                "model": lambda: LinearRegression(n_jobs=16),
                 "parameters": [
-                    {"fit_intercept": [True]},
+                    {"positive": [False, True]}
                 ],
             },
             {
-                "model": RandomForestRegressor(),
+                "model": lambda: RandomForestRegressor(n_jobs=16),
                 "parameters": [
                     {"n_estimators": [500, 100, 10]},
                     {"max_depth": [1000, 100, 10]},
-                    {"min_samples_split": [100, 10, 2]},
+                    {"min_samples_split": [6, 4, 3, 2]},
                 ],
             },
         ]
@@ -151,12 +157,11 @@ def main(
             X_train, y_train, X_test, y_test, name = dataset
             print(f"Dataset: {name}")
 
-            scores = []
-            predictions = []
 
             for model_entry in models:
+                scores: dict[str, (float, any)] = {}
 
-                model = model_entry["model"]
+                modelFunction = model_entry["model"]
 
                 for parameter_set in model_entry["parameters"]:
 
@@ -165,39 +170,45 @@ def main(
                         for value in values:
 
                             print(f"Parameter: {parameter}, value: {value}")
-                            model.set_params(**{parameter: value})
+                            model = modelFunction()
+                            model.set_params()
 
-                            scores, prediction = process_model(
-                                model, X_train, y_train, X_test, y_test
+                            score = estimate_model(
+                                model, X_train, y_train
                             )
 
-                            scores.append(scores)
-                            predictions.append(prediction)
-
+                            score_mean = np.mean(score)
+                            if(parameter not in scores or score_mean > scores[parameter][0]):
+                                scores[parameter] = (score_mean, value)
+                            else:
+                                break
+                print("Best parameters found:")
+                print(scores)
                 print(
-                    f"Finished model: {model.__class__.__name__} with parameter: {parameter}"
+                    f"Finished model: {model.__class__.__name__} with parameter: {parameter}\n"
                 )
 
     if train_final_model:
         final_liner_regression = LinearRegression()
         final_random_forest = RandomForestRegressor(
-            criterion="absolute_error",
+            n_jobs=16,
+            criterion="squared_error",
             max_depth=100,
-            min_samples_split=2,
+            min_samples_split=4,
             n_estimators=500,
             # Empirical good default values are max_features=n_features for regression problems
             max_features=X_preprocessed_train.shape[1],
         )
 
-        linear_regression_scores, linear_regression_predictions = process_model(
+        linear_regression_predictions = predict_using_model(
             final_liner_regression,
-            X_preprocessed_train,
+            X_train,
             y_train,
-            X_preprocessed_test,
+            X_test,
             y_test,
         )
 
-        random_forest_scores, random_forest_predictions = process_model(
+        random_forest_predictions = predict_using_model(
             final_random_forest,
             X_preprocessed_train,
             y_train,
@@ -222,16 +233,7 @@ def main(
         plt.ylabel("Target")
         plt.title("Predictions vs. True values")
         plt.legend()
-        plt.show()
 
-        plt.figure(figsize=(4, 2), dpi=320)
-        plt.grid()
-        plt.plot(np.abs(linear_regression_scores), marker="o", label="LinearRegression")
-        plt.plot(np.abs(random_forest_scores), marker="o", label="RandomForest")
-        plt.xlabel("Fold")
-        plt.ylabel("MSE")
-        plt.title("Cross-validation results")
-        plt.legend()
         plt.show()
 
 

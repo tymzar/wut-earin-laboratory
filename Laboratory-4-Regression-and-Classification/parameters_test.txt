@@ -1,128 +1,119 @@
 Dataset: Full dataset
-Parameter: fit_intercept, value: True
-Model LinearRegression CV scores: [-0.54250669 -0.54187767 -0.53234035 -0.49738347], mean: -0.5285270449646753, std: 0.018426427254250918
-Model LinearRegression MSE: 0.5289841670367208, R2: 0.5943232652466204
-Finished model: LinearRegression with parameter: fit_intercept
+Parameter: positive, value: False
+Model LinearRegression CV scores: [0.6018806  0.60080686 0.6011203  0.61697712], mean: 0.6051962209608794, std: 0.006812903285331857
+
+Parameter: positive, value: True
+Model LinearRegression CV scores: [0.6018806  0.60080686 0.6011203  0.61697712], mean: 0.6051962209608794, std: 0.006812903285331857
+
+Best parameters found:
+{'positive': (0.6051962209608794, False)}
+Finished model: LinearRegression with parameter: positive
+
 Parameter: n_estimators, value: 500
-Model RandomForestRegressor CV scores: [-0.27836764 -0.27341529 -0.25610048 -0.25189842], mean: -0.26494545723120716, std: 0.011184274441537826
-Model RandomForestRegressor MSE: 0.2592150337601365, R2: 0.8012085898829946
+Model RandomForestRegressor CV scores: [0.79104267 0.79604106 0.80594063 0.80616334], mean: 0.7997969252247596, std: 0.006500381542486601
+
 Parameter: n_estimators, value: 100
-Model RandomForestRegressor CV scores: [-0.28442428 -0.27753187 -0.26087935 -0.25678164], mean: -0.2699042845805419, std: 0.011430918180125711
-Model RandomForestRegressor MSE: 0.2629229072944736, R2: 0.7983650302416643
+Model RandomForestRegressor CV scores: [0.79421495 0.79680412 0.8065729  0.80221133], mean: 0.79995082590759, std: 0.00478967092751449
+
 Parameter: n_estimators, value: 10
-Model RandomForestRegressor CV scores: [-0.29776362 -0.29880859 -0.29189674 -0.28618213], mean: -0.2936627712680234, std: 0.005059033352982597
-Model RandomForestRegressor MSE: 0.2861280487440525, R2: 0.7805690609114481
-Parameter: criterion, value: absolute_error
-Model RandomForestRegressor CV scores: [-0.30437686 -0.29068158 -0.29249569 -0.28188475], mean: -0.29235971898174357, std: 0.008015162021494224
-Model RandomForestRegressor MSE: 0.2818642796739607, R2: 0.7838389355539858
-Parameter: criterion, value: squared_error
-Model RandomForestRegressor CV scores: [-0.31143075 -0.31155306 -0.28101902 -0.29609656], mean: -0.30002484537228075, std: 0.012645624183928778
-Model RandomForestRegressor MSE: 0.28635382782373686, R2: 0.7803959114572119
-Parameter: criterion, value: friedman_mse
-Model RandomForestRegressor CV scores: [-0.30667181 -0.31128073 -0.29230687 -0.27438227], mean: -0.29616042046301555, std: 0.014389670324237306
-Model RandomForestRegressor MSE: 0.2884738335162386, R2: 0.7787700839928278
+Model RandomForestRegressor CV scores: [0.79407239 0.79614677 0.80507917 0.8056143 ], mean: 0.8002281563442087, std: 0.005174310215414295
+
 Parameter: max_depth, value: 1000
-Model RandomForestRegressor CV scores: [-0.31106898 -0.30107291 -0.29152809 -0.27532885], mean: -0.29474970652071647, std: 0.013170517560819151
-Model RandomForestRegressor MSE: 0.29114091016863464, R2: 0.7767247090740621
+Model RandomForestRegressor CV scores: [0.79170529 0.79715228 0.8044379  0.80545639], mean: 0.7996879652982272, std: 0.00561224868724737
+
 Parameter: max_depth, value: 100
-Model RandomForestRegressor CV scores: [-0.31104525 -0.29958152 -0.2936922  -0.28933054], mean: -0.2984123778422228, std: 0.008150403919491409
-Model RandomForestRegressor MSE: 0.2816286407576223, R2: 0.7840196464941571
+Model RandomForestRegressor CV scores: [0.7936938  0.79618624 0.80722708 0.80459666], mean: 0.8004259450292074, std: 0.00563354252844714
+
 Parameter: max_depth, value: 10
-Model RandomForestRegressor CV scores: [-0.32857213 -0.32832019 -0.30319329 -0.30891167], mean: -0.31724932167935416, std: 0.01137825208898265
-Model RandomForestRegressor MSE: 0.32339493244978357, R2: 0.7519891739540272
-Parameter: min_samples_split, value: 100
-Model RandomForestRegressor CV scores: [-0.35904457 -0.3604247  -0.33482316 -0.32060173], mean: -0.3437235424663138, std: 0.016789114874396785
-Model RandomForestRegressor MSE: 0.3373300586545613, R2: 0.7413023578839008
-Parameter: min_samples_split, value: 10
-Model RandomForestRegressor CV scores: [-0.3199629  -0.33638551 -0.30355742 -0.2950574 ], mean: -0.31374080771434637, std: 0.015845092703058034
-Model RandomForestRegressor MSE: 0.31361841774303933, R2: 0.759486760480516
-Parameter: min_samples_split, value: 2
-Model RandomForestRegressor CV scores: [-0.32774895 -0.31383612 -0.30306177 -0.30350731], mean: -0.31203853739937754, std: 0.010042564198886963
-Model RandomForestRegressor MSE: 0.3124412504797308, R2: 0.7603895273332797
+Model RandomForestRegressor CV scores: [0.79325614 0.79758281 0.8087721  0.80306279], mean: 0.8006684616108973, std: 0.005828068903254114
+
+Parameter: min_samples_split, value: 6
+Model RandomForestRegressor CV scores: [0.79039492 0.79660205 0.80827428 0.80303006], mean: 0.7995753254293898, std: 0.006721738974629543
+
+Parameter: min_samples_split, value: 4
+Model RandomForestRegressor CV scores: [0.79377153 0.79773552 0.80703655 0.80263563], mean: 0.8002948069164476, std: 0.005000841674130705
+
+Parameter: min_samples_split, value: 3
+Model RandomForestRegressor CV scores: [0.79396329 0.79499602 0.80553952 0.80467406], mean: 0.7997932231984782, std: 0.0053348812240204555
+
+Best parameters found:
+{'n_estimators': (0.8002281563442087, 10), 'max_depth': (0.8006684616108973, 10), 'min_samples_split': (0.8002948069164476, 4)}
 Finished model: RandomForestRegressor with parameter: min_samples_split
 
 Dataset: PCA dataset
-Parameter: fit_intercept, value: True
-Model LinearRegression CV scores: [-0.54631244 -0.55333169 -0.53184981 -0.51240165], mean: -0.5359739000011032, std: 0.01565916321086865
-Model LinearRegression MSE: 0.5485351156119957, R2: 0.5793296879836581
-Finished model: LinearRegression with parameter: fit_intercept
+Parameter: positive, value: False
+Model LinearRegression CV scores: [0.59908774 0.59236886 0.60148786 0.60541199], mean: 0.5995891103153316, std: 0.004740639530798862
+
+Parameter: positive, value: True
+Model LinearRegression CV scores: [0.59908774 0.59236886 0.60148786 0.60541199], mean: 0.5995891103153316, std: 0.004740639530798862
+
+Best parameters found:
+{'positive': (0.5995891103153316, False)}
+Finished model: LinearRegression with parameter: positive
+
 Parameter: n_estimators, value: 500
-Model RandomForestRegressor CV scores: [-0.32880474 -0.33663602 -0.32249658 -0.30515612], mean: -0.32327336643652, std: 0.011597356081577274
-Model RandomForestRegressor MSE: 0.31919240466804644, R2: 0.7552120827941081
+Model RandomForestRegressor CV scores: [0.77323111 0.77107622 0.77493573 0.7782672 ], mean: 0.7743775666089895, std: 0.0026293548631303367
+
 Parameter: n_estimators, value: 100
-Model RandomForestRegressor CV scores: [-0.33045319 -0.33838386 -0.32756059 -0.30625234], mean: -0.3256624959512512, std: 0.011886345034616637
-Model RandomForestRegressor MSE: 0.320006785214079, R2: 0.7545875362361045
+Model RandomForestRegressor CV scores: [0.771917   0.77209346 0.77753224 0.77776468], mean: 0.7748268431573626, std: 0.0028234979586737345
+
 Parameter: n_estimators, value: 10
-Model RandomForestRegressor CV scores: [-0.34214729 -0.35656719 -0.33963254 -0.32561199], mean: -0.3409897538066945, std: 0.010980825020385512
-Model RandomForestRegressor MSE: 0.3402039629636376, R2: 0.7390983673133875
-Parameter: criterion, value: absolute_error
-Model RandomForestRegressor CV scores: [-0.35415555 -0.36547699 -0.35315299 -0.32284683], mean: -0.3489080902369559, std: 0.015805636349555903
-Model RandomForestRegressor MSE: 0.34491050835844866, R2: 0.7354889285310676
-Parameter: criterion, value: squared_error
-Model RandomForestRegressor CV scores: [-0.34996045 -0.35103138 -0.34377111 -0.31819958], mean: -0.34074062829962676, std: 0.013305895877118407
-Model RandomForestRegressor MSE: 0.3366788869464577, R2: 0.7418017399614156
-Parameter: criterion, value: friedman_mse
-Model RandomForestRegressor CV scores: [-0.34498545 -0.35391241 -0.34088264 -0.32219944], mean: -0.3404949815610892, std: 0.011565778320407965
-Model RandomForestRegressor MSE: 0.3363837384965156, R2: 0.7420280886253288
+Model RandomForestRegressor CV scores: [0.77400246 0.7714449  0.77557945 0.77830003], mean: 0.7748317090113982, std: 0.0024872913049549432
+
 Parameter: max_depth, value: 1000
-Model RandomForestRegressor CV scores: [-0.34258495 -0.3456306  -0.33164809 -0.31349537], mean: -0.3333397523409368, std: 0.012581731747093051
-Model RandomForestRegressor MSE: 0.3243709557482701, R2: 0.751240663942865
+Model RandomForestRegressor CV scores: [0.77269116 0.76826526 0.77666918 0.77838326], mean: 0.7740022160910058, std: 0.003903131659943362
+
 Parameter: max_depth, value: 100
-Model RandomForestRegressor CV scores: [-0.33850152 -0.33818291 -0.32324935 -0.31755021], mean: -0.3293709981244932, std: 0.009195404587897207
-Model RandomForestRegressor MSE: 0.32333193839788615, R2: 0.7520374839467927
-Parameter: max_depth, value: 10
-Model RandomForestRegressor CV scores: [-0.34194369 -0.35286771 -0.34333525 -0.325071  ], mean: -0.34080441266871425, std: 0.01000957824712167
-Model RandomForestRegressor MSE: 0.336921155459016, R2: 0.7416159447992299
-Parameter: min_samples_split, value: 100
-Model RandomForestRegressor CV scores: [-0.37199144 -0.38063458 -0.36550151 -0.34098852], mean: -0.3647790102254131, std: 0.014747269834646198
-Model RandomForestRegressor MSE: 0.35130602469602845, R2: 0.7305842218374339
-Parameter: min_samples_split, value: 10
-Model RandomForestRegressor CV scores: [-0.35030879 -0.34979701 -0.34063491 -0.32322571], mean: -0.3409916090968803, std: 0.01095558553415307
-Model RandomForestRegressor MSE: 0.33578377257709924, R2: 0.742488201101881
-Parameter: min_samples_split, value: 2
-Model RandomForestRegressor CV scores: [-0.34741365 -0.35239214 -0.33822191 -0.31900739], mean: -0.3392587725333184, std: 0.012749322667060537
-Model RandomForestRegressor MSE: 0.33495220915684615, R2: 0.7431259251663995
+Model RandomForestRegressor CV scores: [0.77208371 0.77009422 0.77509169 0.77791543], mean: 0.7737962608494153, std: 0.002970000434752681
+
+Parameter: min_samples_split, value: 6
+Model RandomForestRegressor CV scores: [0.77256219 0.77090847 0.77630516 0.77804169], mean: 0.7744543787766949, std: 0.002848157011058392
+
+Parameter: min_samples_split, value: 4
+Model RandomForestRegressor CV scores: [0.77375727 0.77019601 0.77487723 0.78053226], mean: 0.7748406907037703, std: 0.003712886337177219
+
+Parameter: min_samples_split, value: 3
+Model RandomForestRegressor CV scores: [0.77205809 0.76808508 0.77479412 0.77868969], mean: 0.7734067439950125, std: 0.003872119814292567
+
+Best parameters found:
+{'n_estimators': (0.7748317090113982, 10), 'max_depth': (0.7740022160910058, 1000), 'min_samples_split': (0.7748406907037703, 4)}
 Finished model: RandomForestRegressor with parameter: min_samples_split
 
 Dataset: Preprocessed dataset
-Parameter: fit_intercept, value: True
-Model LinearRegression CV scores: [-0.54399363 -0.53947562 -0.53269991 -0.49817176], mean: -0.5285852310189941, std: 0.018013391178429445
-Model LinearRegression MSE: 0.532099287062932, R2: 0.5919342869002977
-Finished model: LinearRegression with parameter: fit_intercept
+Parameter: positive, value: False
+Model LinearRegression CV scores: [0.6007894  0.60257642 0.60085088 0.61637008], mean: 0.6051466955884017, std: 0.0065194091568343115
+
+Parameter: positive, value: True
+Model LinearRegression CV scores: [0.6007894  0.60257642 0.60085088 0.61637008], mean: 0.6051466955884017, std: 0.0065194091568343115
+
+Best parameters found:
+{'positive': (0.6051466955884017, False)}
+Finished model: LinearRegression with parameter: positive
+
 Parameter: n_estimators, value: 500
-Model RandomForestRegressor CV scores: [-0.32594782 -0.32338589 -0.31537157 -0.28112156], mean: -0.31145671109578216, std: 0.01794327984901464
-Model RandomForestRegressor MSE: 0.3035743196811862, R2: 0.7671895560634175
+Model RandomForestRegressor CV scores: [0.79053651 0.79574877 0.8002716  0.81203886], mean: 0.799648935175858, std: 0.007939546524453096
+
 Parameter: n_estimators, value: 100
-Model RandomForestRegressor CV scores: [-0.32694365 -0.32690817 -0.32033712 -0.28325682], mean: -0.3143614422669348, std: 0.018158597969483308
-Model RandomForestRegressor MSE: 0.3069511177714346, R2: 0.7645998974147528
-Parameter: n_estimators, value: 10
-Model RandomForestRegressor CV scores: [-0.3517598  -0.34431507 -0.33084119 -0.30645884], mean: -0.3333437234867521, std: 0.017237909679620845
-Model RandomForestRegressor MSE: 0.32315651551422125, R2: 0.752172015350719
-Parameter: criterion, value: absolute_error
-Model RandomForestRegressor CV scores: [-0.35712421 -0.31979197 -0.33326904 -0.28579522], mean: -0.32399511199376785, std: 0.025789731551466907
-Model RandomForestRegressor MSE: 0.3065367822658265, R2: 0.7649176503561103
-Parameter: criterion, value: squared_error
-Model RandomForestRegressor CV scores: [-0.35450522 -0.34148467 -0.33299448 -0.30613909], mean: -0.33378086372925186, std: 0.017702639973126683
-Model RandomForestRegressor MSE: 0.3151802056621554, R2: 0.7582890289360097
-Parameter: criterion, value: friedman_mse
-Model RandomForestRegressor CV scores: [-0.34371662 -0.33740859 -0.34184988 -0.29644319], mean: -0.32985457003255203, std: 0.019425677431477276
-Model RandomForestRegressor MSE: 0.3260069329629217, R2: 0.7499860367991291
+Model RandomForestRegressor CV scores: [0.79060762 0.7978949  0.79609936 0.81262011], mean: 0.7993054997253537, std: 0.008142498151653325
+
 Parameter: max_depth, value: 1000
-Model RandomForestRegressor CV scores: [-0.31019488 -0.30031818 -0.28754414 -0.27237967], mean: -0.29260921873705314, std: 0.014173680644564608
-Model RandomForestRegressor MSE: 0.28201784204328345, R2: 0.7837211689279697
+Model RandomForestRegressor CV scores: [0.78799787 0.79804782 0.79851492 0.81088925], mean: 0.7988624651111643, std: 0.008115841278767038
+
 Parameter: max_depth, value: 100
-Model RandomForestRegressor CV scores: [-0.3056379  -0.30423356 -0.29992626 -0.26573015], mean: -0.2938819668789539, std: 0.016389140734713446
-Model RandomForestRegressor MSE: 0.28547499151527345, R2: 0.7810698889904097
+Model RandomForestRegressor CV scores: [0.79333492 0.79797085 0.79669886 0.8105336 ], mean: 0.7996345598855685, std: 0.006516532541296796
+
 Parameter: max_depth, value: 10
-Model RandomForestRegressor CV scores: [-0.34785097 -0.33316295 -0.3403851  -0.29478807], mean: -0.3290467702607258, std: 0.02044967618777901
-Model RandomForestRegressor MSE: 0.3180772377133433, R2: 0.7560673017535395
-Parameter: min_samples_split, value: 100
-Model RandomForestRegressor CV scores: [-0.38831113 -0.39210075 -0.37229683 -0.34253152], mean: -0.37381005698808534, std: 0.019528616581621156
-Model RandomForestRegressor MSE: 0.35722525743871103, R2: 0.7260447759316171
-Parameter: min_samples_split, value: 10
-Model RandomForestRegressor CV scores: [-0.33779864 -0.33853353 -0.3323664  -0.29655252], mean: -0.3263127740365279, std: 0.017346404068362728
-Model RandomForestRegressor MSE: 0.3183222189997215, R2: 0.755879426171383
-Parameter: min_samples_split, value: 2
-Model RandomForestRegressor CV scores: [-0.35757635 -0.34343846 -0.32830857 -0.30818692], mean: -0.3343775758037813, std: 0.01832393039191825
-Model RandomForestRegressor MSE: 0.3115306053397513, R2: 0.7610878989858291
+Model RandomForestRegressor CV scores: [0.79179592 0.797744   0.79712148 0.81081787], mean: 0.7993698181465384, std: 0.007002145641121982
+
+Parameter: min_samples_split, value: 6
+Model RandomForestRegressor CV scores: [0.7927598  0.79869826 0.79631731 0.81196722], mean: 0.7999356464657001, std: 0.007260767436884317
+
+Parameter: min_samples_split, value: 4
+Model RandomForestRegressor CV scores: [0.79258094 0.79885234 0.79733307 0.81265638], mean: 0.8003556803109374, std: 0.007469102626787471
+
+Parameter: min_samples_split, value: 3
+Model RandomForestRegressor CV scores: [0.78915033 0.79766675 0.79940642 0.81052257], mean: 0.7991865180860183, std: 0.007609028025929302
+
+Best parameters found:
+{'n_estimators': (0.799648935175858, 500), 'max_depth': (0.7996345598855685, 100), 'min_samples_split': (0.8003556803109374, 4)}
 Finished model: RandomForestRegressor with parameter: min_samples_split
