@@ -20,7 +20,7 @@ def set_seed(seed):
 
 
 def preprocess_dataset(X: pd.DataFrame):
-    X = X.drop(columns=["AveOccup", "Population"])
+    X = X.drop(columns=["AveOccup", "AveBedrms"])
     return X
 
 
@@ -193,9 +193,9 @@ def main(
         final_random_forest = RandomForestRegressor(
             n_jobs=16,
             criterion="squared_error",
-            max_depth=100,
+            max_depth=1000,
             min_samples_split=4,
-            n_estimators=500,
+            n_estimators=100,
             # Empirical good default values are max_features=n_features for regression problems
             max_features=X_preprocessed_train.shape[1],
         )

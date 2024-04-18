@@ -10,22 +10,22 @@ Best parameters found:
 Finished model: LinearRegression with parameter: positive
 
 Parameter: n_estimators, value: 500
-Model RandomForestRegressor CV scores: [0.79104267 0.79604106 0.80594063 0.80616334], mean: 0.7997969252247596, std: 0.006500381542486601
+Model RandomForestRegressor CV scores: [0.79104267 0.79604106 0.80594063 0.80616334], mean: 0.7997969252247596, std: 0.006500381542486564
 
 Parameter: n_estimators, value: 100
 Model RandomForestRegressor CV scores: [0.79421495 0.79680412 0.8065729  0.80221133], mean: 0.79995082590759, std: 0.00478967092751449
 
 Parameter: n_estimators, value: 10
-Model RandomForestRegressor CV scores: [0.79407239 0.79614677 0.80507917 0.8056143 ], mean: 0.8002281563442087, std: 0.005174310215414295
+Model RandomForestRegressor CV scores: [0.79407239 0.79614677 0.80507917 0.8056143 ], mean: 0.8002281563442087, std: 0.0051743102154143275
 
 Parameter: max_depth, value: 1000
-Model RandomForestRegressor CV scores: [0.79170529 0.79715228 0.8044379  0.80545639], mean: 0.7996879652982272, std: 0.00561224868724737
+Model RandomForestRegressor CV scores: [0.79170529 0.79715228 0.8044379  0.80545639], mean: 0.7996879652982272, std: 0.005612248687247395
 
 Parameter: max_depth, value: 100
 Model RandomForestRegressor CV scores: [0.7936938  0.79618624 0.80722708 0.80459666], mean: 0.8004259450292074, std: 0.00563354252844714
 
 Parameter: max_depth, value: 10
-Model RandomForestRegressor CV scores: [0.79325614 0.79758281 0.8087721  0.80306279], mean: 0.8006684616108973, std: 0.005828068903254114
+Model RandomForestRegressor CV scores: [0.79325614 0.79758281 0.8087721  0.80306279], mean: 0.8006684616108973, std: 0.005828068903254151
 
 Parameter: min_samples_split, value: 6
 Model RandomForestRegressor CV scores: [0.79039492 0.79660205 0.80827428 0.80303006], mean: 0.7995753254293898, std: 0.006721738974629543
@@ -55,25 +55,25 @@ Parameter: n_estimators, value: 500
 Model RandomForestRegressor CV scores: [0.77323111 0.77107622 0.77493573 0.7782672 ], mean: 0.7743775666089895, std: 0.0026293548631303367
 
 Parameter: n_estimators, value: 100
-Model RandomForestRegressor CV scores: [0.771917   0.77209346 0.77753224 0.77776468], mean: 0.7748268431573626, std: 0.0028234979586737345
+Model RandomForestRegressor CV scores: [0.771917   0.77209346 0.77753224 0.77776468], mean: 0.7748268431573625, std: 0.0028234979586737054
 
 Parameter: n_estimators, value: 10
 Model RandomForestRegressor CV scores: [0.77400246 0.7714449  0.77557945 0.77830003], mean: 0.7748317090113982, std: 0.0024872913049549432
 
 Parameter: max_depth, value: 1000
-Model RandomForestRegressor CV scores: [0.77269116 0.76826526 0.77666918 0.77838326], mean: 0.7740022160910058, std: 0.003903131659943362
+Model RandomForestRegressor CV scores: [0.77269116 0.76826526 0.77666918 0.77838326], mean: 0.7740022160910058, std: 0.0039031316599433433
 
 Parameter: max_depth, value: 100
-Model RandomForestRegressor CV scores: [0.77208371 0.77009422 0.77509169 0.77791543], mean: 0.7737962608494153, std: 0.002970000434752681
+Model RandomForestRegressor CV scores: [0.77208371 0.77009422 0.77509169 0.77791543], mean: 0.7737962608494153, std: 0.0029700004347526687
 
 Parameter: min_samples_split, value: 6
-Model RandomForestRegressor CV scores: [0.77256219 0.77090847 0.77630516 0.77804169], mean: 0.7744543787766949, std: 0.002848157011058392
+Model RandomForestRegressor CV scores: [0.77256219 0.77090847 0.77630516 0.77804169], mean: 0.7744543787766949, std: 0.002848157011058374
 
 Parameter: min_samples_split, value: 4
 Model RandomForestRegressor CV scores: [0.77375727 0.77019601 0.77487723 0.78053226], mean: 0.7748406907037703, std: 0.003712886337177219
 
 Parameter: min_samples_split, value: 3
-Model RandomForestRegressor CV scores: [0.77205809 0.76808508 0.77479412 0.77868969], mean: 0.7734067439950125, std: 0.003872119814292567
+Model RandomForestRegressor CV scores: [0.77205809 0.76808508 0.77479412 0.77868969], mean: 0.7734067439950125, std: 0.003872119814292605
 
 Best parameters found:
 {'n_estimators': (0.7748317090113982, 10), 'max_depth': (0.7740022160910058, 1000), 'min_samples_split': (0.7748406907037703, 4)}
@@ -81,39 +81,39 @@ Finished model: RandomForestRegressor with parameter: min_samples_split
 
 Dataset: Preprocessed dataset
 Parameter: positive, value: False
-Model LinearRegression CV scores: [0.6007894  0.60257642 0.60085088 0.61637008], mean: 0.6051466955884017, std: 0.0065194091568343115
+Model LinearRegression CV scores: [0.59734462 0.59294357 0.60191458 0.60348572], mean: 0.5989221241263081, std: 0.004123492411277447
 
 Parameter: positive, value: True
-Model LinearRegression CV scores: [0.6007894  0.60257642 0.60085088 0.61637008], mean: 0.6051466955884017, std: 0.0065194091568343115
+Model LinearRegression CV scores: [0.59734462 0.59294357 0.60191458 0.60348572], mean: 0.5989221241263081, std: 0.004123492411277447
 
 Best parameters found:
-{'positive': (0.6051466955884017, False)}
+{'positive': (0.5989221241263081, False)}
 Finished model: LinearRegression with parameter: positive
 
 Parameter: n_estimators, value: 500
-Model RandomForestRegressor CV scores: [0.79053651 0.79574877 0.8002716  0.81203886], mean: 0.799648935175858, std: 0.007939546524453096
+Model RandomForestRegressor CV scores: [0.79848637 0.79798496 0.8044037  0.81333961], mean: 0.8035536614559325, std: 0.006188200615666375
 
 Parameter: n_estimators, value: 100
-Model RandomForestRegressor CV scores: [0.79060762 0.7978949  0.79609936 0.81262011], mean: 0.7993054997253537, std: 0.008142498151653325
+Model RandomForestRegressor CV scores: [0.8011558  0.79785495 0.80231628 0.81495874], mean: 0.8040714415694235, std: 0.006495373732146502
+
+Parameter: n_estimators, value: 10
+Model RandomForestRegressor CV scores: [0.80026075 0.79651224 0.80212531 0.81226034], mean: 0.8027896606884994, std: 0.0058295918682408345
 
 Parameter: max_depth, value: 1000
-Model RandomForestRegressor CV scores: [0.78799787 0.79804782 0.79851492 0.81088925], mean: 0.7988624651111643, std: 0.008115841278767038
+Model RandomForestRegressor CV scores: [0.80216979 0.79956761 0.80171277 0.81160303], mean: 0.8037633001886371, std: 0.0046316638873782675
 
 Parameter: max_depth, value: 100
-Model RandomForestRegressor CV scores: [0.79333492 0.79797085 0.79669886 0.8105336 ], mean: 0.7996345598855685, std: 0.006516532541296796
-
-Parameter: max_depth, value: 10
-Model RandomForestRegressor CV scores: [0.79179592 0.797744   0.79712148 0.81081787], mean: 0.7993698181465384, std: 0.007002145641121982
+Model RandomForestRegressor CV scores: [0.79841931 0.79765815 0.80085648 0.81036575], mean: 0.8018249242797435, std: 0.0050705968654488195
 
 Parameter: min_samples_split, value: 6
-Model RandomForestRegressor CV scores: [0.7927598  0.79869826 0.79631731 0.81196722], mean: 0.7999356464657001, std: 0.007260767436884317
+Model RandomForestRegressor CV scores: [0.80062041 0.7988973  0.80117762 0.81508496], mean: 0.8039450736539041, std: 0.006486317078236744
 
 Parameter: min_samples_split, value: 4
-Model RandomForestRegressor CV scores: [0.79258094 0.79885234 0.79733307 0.81265638], mean: 0.8003556803109374, std: 0.007469102626787471
+Model RandomForestRegressor CV scores: [0.80023805 0.7997106  0.80251798 0.81343183], mean: 0.8039746150917164, std: 0.0055611266456754155
 
 Parameter: min_samples_split, value: 3
-Model RandomForestRegressor CV scores: [0.78915033 0.79766675 0.79940642 0.81052257], mean: 0.7991865180860183, std: 0.007609028025929302
+Model RandomForestRegressor CV scores: [0.7988442  0.79860018 0.80227142 0.8120905 ], mean: 0.8029515763087389, std: 0.005472380357503012
 
 Best parameters found:
-{'n_estimators': (0.799648935175858, 500), 'max_depth': (0.7996345598855685, 100), 'min_samples_split': (0.8003556803109374, 4)}
+{'n_estimators': (0.8040714415694235, 100), 'max_depth': (0.8037633001886371, 1000), 'min_samples_split': (0.8039746150917164, 4)}
 Finished model: RandomForestRegressor with parameter: min_samples_split
