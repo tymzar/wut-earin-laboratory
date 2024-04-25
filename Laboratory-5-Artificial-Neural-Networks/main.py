@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 import torch.optim as optim
 from torchvision import datasets, transforms
 
+from ray.train import torch as raytorch
 from ray import tune
 from ray.air import session
 from ray.train import Checkpoint
@@ -15,6 +16,7 @@ import tempfile
 import os
 import matplotlib.pyplot as plt
 from copy import deepcopy
+import numpy as np
 
 
 # Implement a multilayer perceptron for image classification. The neural network should be trained with the mini-batch gradient descent method. Remember to split the dataset into training and validation sets.
@@ -67,8 +69,6 @@ class NeuralNetwork(nn.Module):
 
 
 def present_dataset_sample(dataset):
-    import matplotlib.pyplot as plt
-    import numpy as np
 
     # Display the first image
     plt.imshow(np.array(dataset[0][0]).reshape(28, 28), cmap="gray")
@@ -109,6 +109,7 @@ def calculate_loss(outputs, labels, criterion_name, criterion):
 
 
 def train_mnist(config, trainset):
+    raytorch.enable_reproducibility(0)
 
     net = NeuralNetwork(
         config["num_classes"],
@@ -116,7 +117,14 @@ def train_mnist(config, trainset):
         config["num_hidden_layers"],
         config["criterion"]["name"],
     )
-    device = "cpu"
+    device = (
+        "cuda"
+        if torch.cuda.is_available()
+        else "mps"
+        if torch.backends.mps.is_available()
+        else "cpu"
+    )
+    print(f"Using {device} device")
     net.to(device)
 
     criterion = config["criterion"]["criterion"]
@@ -272,6 +280,8 @@ def plot_accuracy_epoch(results: ExperimentAnalysis):
 
 def main(num_samples=1, max_num_epochs=5):
 
+    torch.manual_seed(0)
+    np.random.seed(0)
     data_dir = os.path.abspath("./data")
 
     trainset, _ = load_dataset(data_dir)
@@ -306,14 +316,14 @@ def main(num_samples=1, max_num_epochs=5):
     )
     result = tune.run(
         partial(train_mnist, trainset=trainset),
-        resources_per_trial={"cpu": 2},
+        resources_per_trial={"cpu": 3, "gpu":0},
         config=config,
         num_samples=num_samples,
         scheduler=scheduler,
     )
 
     best_trial = result.get_best_trial("loss", "min", "last")
-    plot_accuracy_epoch(result, best_trial.config)
+    plot_accuracy_epoch(result)
     print(f"Best trial config: {best_trial.config}")
     print(f"Best trial final validation loss: {best_trial.last_result['loss']}")
     print(f"Best trial final validation accuracy: {best_trial.last_result['accuracy']}")
@@ -326,4 +336,4 @@ def main(num_samples=1, max_num_epochs=5):
 
 
 if __name__ == "__main__":
-    main(num_samples=2, max_num_epochs=10)
+    main(num_samples=2, max_num_epochs=6)
