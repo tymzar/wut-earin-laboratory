@@ -32,31 +32,37 @@ class NeuralNetwork(nn.Module):
         num_hidden_layers=1,
         loss_finction_name="CrossEntropyLoss",
     ):
+        super().__init__()
 
-        super(NeuralNetwork, self).__init__()
-        self.num_classes = num_classes
-        self.num_hidden_neurons = num_hidden_neurons
-        self.num_hidden_layers = num_hidden_layers
+        self.encoder = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(28 * 28, num_hidden_neurons),
+            nn.ReLU(),
+        )
 
-        self.input_layer = nn.Linear(28 * 28, self.num_hidden_neurons)
         self.hidden_layers = nn.ModuleList(
             [
-                nn.Linear(self.num_hidden_neurons, self.num_hidden_neurons)
-                for _ in range(self.num_hidden_layers)
+                nn.Linear(num_hidden_neurons, num_hidden_neurons)
+                for _ in range(num_hidden_layers)
             ]
         )
-        self.output_layer = (
-            nn.Linear(self.num_hidden_neurons, self.num_classes)
-            if loss_finction_name == "CrossEntropyLoss"
-            else nn.Linear(self.num_hidden_neurons, 1)
-        )
+
+        potential_decoder = [
+            nn.Linear(num_hidden_neurons, num_classes),
+        ]
+
+        if loss_finction_name != "CrossEntropyLoss":
+            potential_decoder.append(nn.LogSoftmax(dim=1))
+
+        self.decoder = nn.Sequential(*potential_decoder)
 
     def forward(self, x):
-        x = torch.relu(self.input_layer(x))
+        """Forward pass"""
+
+        x = self.encoder(x)
         for hidden_layer in self.hidden_layers:
             x = torch.relu(hidden_layer(x))
-        x = self.output_layer(x)
-
+        x = self.decoder(x)
         return x
 
 
@@ -88,6 +94,18 @@ def load_dataset(data_dir="./data") -> tuple:
     test_dataset = datasets.MNIST(root=data_dir, train=False, transform=transform)
 
     return train_dataset, test_dataset
+
+
+def calculate_loss(outputs, labels, criterion_name, criterion):
+    return criterion(outputs, labels)
+    # match criterion_name:
+    #     case "CrossEntropyLoss":
+    #         return criterion(outputs, labels)
+    #     case "MSELoss":
+    #         softmaxed_outputs_prob = nn.Softmax(dim=1)(outputs)
+    #         y_pred = torch.argmax(softmaxed_outputs_prob, dim=1)
+    #         loss = criterion(y_pred.float(), labels.float())
+    #         return loss
 
 
 def train_mnist(config, trainset):
@@ -154,11 +172,9 @@ def train_mnist(config, trainset):
             print(outputs.shape)
             print(labels.unsqueeze(1).shape)
 
-            loss = None
-            # depending on the loss function, you may need to change the next line
-            # match config["criterion"]["name"]:
-            #     case "CrossEntropyLoss":
-            loss = criterion(outputs.float(), labels.unsqueeze(1).float())
+            loss = calculate_loss(
+                outputs, labels, config["criterion"]["name"], criterion
+            )
 
             loss.backward()
             optimizer.step()
@@ -194,9 +210,9 @@ def train_mnist(config, trainset):
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
 
-                loss = None
-
-                loss = criterion(outputs.float(), labels.unsqueeze(1).float())
+                loss = calculate_loss(
+                    outputs, labels, config["criterion"]["name"], criterion
+                )
 
                 val_loss += loss.cpu().numpy()
                 val_steps += 1
@@ -250,7 +266,6 @@ def plot_accuracy_epoch(results: ExperimentAnalysis):
         accuracy = trial.metric_n_steps["accuracy"]["10"]
         epochs = list(range(len(accuracy)))
 
-        plt.figure()
         plt.plot(epochs, accuracy, label=f"Trial {trial.trial_id}")
         plt.title(f"Trial {trial.trial_id}")
         plt.xlabel("Epoch")
@@ -280,8 +295,8 @@ def main(num_samples=1, max_num_epochs=5):
         "criterion": tune.choice(
             [
                 {"name": "CrossEntropyLoss", "criterion": nn.CrossEntropyLoss()},
-                {"name": "MSELoss", "criterion": nn.MSELoss()},
-                {"name": "L1Loss", "criterion": nn.L1Loss()},
+                {"name": "MultiMarginLoss", "criterion": nn.MultiMarginLoss()},
+                {"name": "NLLLoss", "criterion": nn.NLLLoss()},
             ]
         ),
     }
@@ -289,12 +304,12 @@ def main(num_samples=1, max_num_epochs=5):
         metric="loss",
         mode="min",
         max_t=max_num_epochs,
-        grace_period=1,
+        grace_period=3,
         reduction_factor=2,
     )
     result = tune.run(
         partial(train_mnist, trainset=trainset),
-        resources_per_trial={"cpu": 3},
+        resources_per_trial={"cpu": 2},
         config=config,
         num_samples=num_samples,
         scheduler=scheduler,
@@ -313,4 +328,4 @@ def main(num_samples=1, max_num_epochs=5):
 
 
 if __name__ == "__main__":
-    main(num_samples=3, max_num_epochs=10)
+    main(num_samples=15, max_num_epochs=10)
