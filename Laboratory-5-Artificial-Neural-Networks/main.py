@@ -169,9 +169,6 @@ def train_mnist(config, trainset):
             # Forward pass
             outputs = net(images)
 
-            print(outputs.shape)
-            print(labels.unsqueeze(1).shape)
-
             loss = calculate_loss(
                 outputs, labels, config["criterion"]["name"], criterion
             )
@@ -234,30 +231,26 @@ def train_mnist(config, trainset):
     print("Finished Training")
 
 
-def plot_loss_learning_step(results: ExperimentAnalysis):
+def config_to_string(config: dict):
+    return f"lr: {config['lr']}, batch_size: {config['batch_size']}, num_hidden: {config['num_hidden']}, num_hidden_layers: {config['num_hidden_layers']}, criterion: {config['criterion']['name']}"
 
-    for trial in results.trials:
 
-        learning_step_loss_per_epoch = trial.metric_n_steps[
-            "learning_step_loss_per_epoch"
-        ]
+def plot_loss_learning_step(results: list[list[float]], config: dict):
 
-        plt.figure()
-        plt.title(f"Trial {trial.trial_id}")
+    plt.figure()
+    plt.title(f"Trial with config: {config_to_string(config)}")
 
-        # make one plot for all epochs in the trial
-        for epoch in learning_step_loss_per_epoch:
+    # make one plot for all epochs in the trial
+    for epoch in results:
 
-            plt.plot(epoch, label=f"Epoch {learning_step_loss_per_epoch.index(epoch)}")
-            for step in epoch:
-                plt.scatter(
-                    learning_step_loss_per_epoch.index(epoch), step, color="red"
-                )
+        plt.plot(epoch, label=f"Epoch {results.index(epoch)}")
+        for step in epoch:
+            plt.scatter(results.index(epoch), step, color="red")
 
-        plt.xlabel("Step")
-        plt.ylabel("Loss")
-        plt.legend()
-        plt.show()
+    plt.xlabel("Step")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.show()
 
 
 def plot_accuracy_epoch(results: ExperimentAnalysis):
@@ -266,8 +259,12 @@ def plot_accuracy_epoch(results: ExperimentAnalysis):
         accuracy = trial.metric_n_steps["accuracy"]["10"]
         epochs = list(range(len(accuracy)))
 
-        plt.plot(epochs, accuracy, label=f"Trial {trial.trial_id}")
-        plt.title(f"Trial {trial.trial_id}")
+        plt.plot(
+            epochs,
+            accuracy,
+            label=f"Trial {trial.trial_id}, config: {config_to_string(trial.config)}",
+        )
+        plt.title(f"Trial {trial.trial_id}, config: {trial.config}")
         plt.xlabel("Epoch")
         plt.ylabel("Accuracy")
         plt.legend()
@@ -315,17 +312,18 @@ def main(num_samples=1, max_num_epochs=5):
         scheduler=scheduler,
     )
 
-    # plot_loss_learning_step(result)
-    plot_accuracy_epoch(result)
-
     best_trial = result.get_best_trial("loss", "min", "last")
+    plot_accuracy_epoch(result, best_trial.config)
     print(f"Best trial config: {best_trial.config}")
     print(f"Best trial final validation loss: {best_trial.last_result['loss']}")
     print(f"Best trial final validation accuracy: {best_trial.last_result['accuracy']}")
+    plot_loss_learning_step(
+        best_trial.last_result["learning_step_loss_per_epoch"], best_trial.config
+    )
 
     plt.show()
     print("Done")
 
 
 if __name__ == "__main__":
-    main(num_samples=15, max_num_epochs=10)
+    main(num_samples=2, max_num_epochs=10)
