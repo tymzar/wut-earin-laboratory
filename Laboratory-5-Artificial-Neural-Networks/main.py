@@ -13,6 +13,8 @@ from torch.utils.data import random_split
 from functools import partial
 import tempfile
 import os
+import matplotlib.pyplot as plt
+from copy import deepcopy
 
 
 # Implement a multilayer perceptron for image classification. The neural network should be trained with the mini-batch gradient descent method. Remember to split the dataset into training and validation sets.
@@ -22,25 +24,14 @@ import os
 # • Accuracy on the training and validation set after each epoch.
 
 
-def plot_loss_accuracy(loss, accuracy, params):
-    import matplotlib.pyplot as plt
-
-    print(f"Plotting loss and accuracy for {len(loss)} epochs")
-
-    plt.plot(loss, label="loss")
-    plt.plot(accuracy, label="accuracy")
-    plt.xlabel("Epoch")
-    plt.ylabel("Value")
-    plt.legend()
-    plt.show()
-
-    # save the plot
-    plot_name = f"./plot-{len(loss)}-epochs-{len(accuracy)}-accuracy-{params['num_hidden']}-hidden-{params['lr']}-lr-{params['batch_size']}-batch_size.png"
-    plt.savefig(plot_name)
-
-
 class NeuralNetwork(nn.Module):
-    def __init__(self, num_classes, num_hidden_neurons, num_hidden_layers=1):
+    def __init__(
+        self,
+        num_classes,
+        num_hidden_neurons,
+        num_hidden_layers=1,
+        loss_finction_name="CrossEntropyLoss",
+    ):
 
         super(NeuralNetwork, self).__init__()
         self.num_classes = num_classes
@@ -54,13 +45,18 @@ class NeuralNetwork(nn.Module):
                 for _ in range(self.num_hidden_layers)
             ]
         )
-        self.output_layer = nn.Linear(self.num_hidden_neurons, self.num_classes)
+        self.output_layer = (
+            nn.Linear(self.num_hidden_neurons, self.num_classes)
+            if loss_finction_name == "CrossEntropyLoss"
+            else nn.Linear(self.num_hidden_neurons, 1)
+        )
 
     def forward(self, x):
         x = torch.relu(self.input_layer(x))
         for hidden_layer in self.hidden_layers:
             x = torch.relu(hidden_layer(x))
         x = self.output_layer(x)
+
         return x
 
 
@@ -97,7 +93,10 @@ def load_dataset(data_dir="./data") -> tuple:
 def train_mnist(config, trainset):
 
     net = NeuralNetwork(
-        config["num_classes"], config["num_hidden"], config["num_hidden_layers"]
+        config["num_classes"],
+        config["num_hidden"],
+        config["num_hidden_layers"],
+        config["criterion"]["name"],
     )
     device = "cpu"
     net.to(device)
@@ -134,7 +133,10 @@ def train_mnist(config, trainset):
 
     total_step = len(trainloader)
 
+    learning_step_loss_per_epoch = []
+
     for epoch in range(start_epoch, config["epochs"]):
+        current_step_loss = []
         running_loss = 0.0
         epoch_steps = 0
         for index, (images, labels) in enumerate(trainloader):
@@ -149,14 +151,19 @@ def train_mnist(config, trainset):
             # Forward pass
             outputs = net(images)
 
+            print(outputs.shape)
+            print(labels.unsqueeze(1).shape)
+
             loss = None
             # depending on the loss function, you may need to change the next line
-            match config["criterion"]["name"]:
-                case "CrossEntropyLoss":
-                    loss = criterion(outputs, labels)
+            # match config["criterion"]["name"]:
+            #     case "CrossEntropyLoss":
+            loss = criterion(outputs.float(), labels.unsqueeze(1).float())
 
             loss.backward()
             optimizer.step()
+
+            current_step_loss.append(loss.item())
 
             # print statistics
             running_loss += loss.item()
@@ -167,6 +174,8 @@ def train_mnist(config, trainset):
                         epoch + 1, config["epochs"], index + 1, total_step, loss.item()
                     )
                 )
+
+        learning_step_loss_per_epoch.append(deepcopy(current_step_loss))
 
         # Validation loss
         val_loss = 0.0
@@ -186,10 +195,8 @@ def train_mnist(config, trainset):
                 correct += (predicted == labels).sum().item()
 
                 loss = None
-                # depending on the loss function, you may need to change the next line
-                match config["criterion"]["name"]:
-                    case "CrossEntropyLoss":
-                        loss = criterion(outputs, labels)
+
+                loss = criterion(outputs.float(), labels.unsqueeze(1).float())
 
                 val_loss += loss.cpu().numpy()
                 val_steps += 1
@@ -198,12 +205,12 @@ def train_mnist(config, trainset):
             torch.save(net.state_dict(), os.path.join(tmpdir, "model.pt"))
             torch.save(optimizer.state_dict(), os.path.join(tmpdir, "optim.pt"))
             torch.save({"epoch": epoch}, os.path.join(tmpdir, "extra_state.pt"))
-            # save loss per step
 
             session.report(
                 dict(
                     loss=running_loss / epoch_steps,
                     accuracy=correct / total,
+                    learning_step_loss_per_epoch=learning_step_loss_per_epoch,
                 ),
                 checkpoint=Checkpoint.from_directory(tmpdir),
             )
@@ -211,65 +218,51 @@ def train_mnist(config, trainset):
     print("Finished Training")
 
 
-def test_accuracy(net, testset, config, device="cpu"):
-
-    testloader = DataLoader(
-        testset, batch_size=int(config["batch_size"]), shuffle=False
-    )
-
-    # Test the model
-    net.eval()
-    with torch.no_grad():
-        correct = 0
-        total = 0
-        for images, labels in testloader:
-            images = images.reshape(-1, 28 * 28)
-            images, labels = images.to(device), labels.to(device)
-            outputs = net(images)
-            _, predicted = torch.max(outputs.data, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
-
-        print(
-            "Accuracy of the network on the 10000 test images: %d %%"
-            % (100 * correct / total)
-        )
-        return correct / total
-
-
-def plot_loss_learning_step():
-    pass
-
-
-def plot_accuracy_epoch(results: ExperimentAnalysis):
-
-    import matplotlib.pyplot as plt
+def plot_loss_learning_step(results: ExperimentAnalysis):
 
     for trial in results.trials:
 
-        # {"10": deque([0.87775, 0.901, 0.91125], maxlen=10)}
-        accuracy = trial.metric_n_steps["accuracy"]["10"]
-        epochs = list(range(len(accuracy)))
+        learning_step_loss_per_epoch = trial.metric_n_steps[
+            "learning_step_loss_per_epoch"
+        ]
 
-        plt.plot(epochs, accuracy, label=f"Trial {trial.trial_id}")
+        plt.figure()
+        plt.title(f"Trial {trial.trial_id}")
 
-        plt.xlabel("Epoch")
-        plt.ylabel("Accuracy")
+        # make one plot for all epochs in the trial
+        for epoch in learning_step_loss_per_epoch:
+
+            plt.plot(epoch, label=f"Epoch {learning_step_loss_per_epoch.index(epoch)}")
+            for step in epoch:
+                plt.scatter(
+                    learning_step_loss_per_epoch.index(epoch), step, color="red"
+                )
+
+        plt.xlabel("Step")
+        plt.ylabel("Loss")
         plt.legend()
         plt.show()
 
 
-#     import matplotlib.pyplot as plt
+def plot_accuracy_epoch(results: ExperimentAnalysis):
 
-#     for trial in results:
+    for trial in results.trials:
+        accuracy = trial.metric_n_steps["accuracy"]["10"]
+        epochs = list(range(len(accuracy)))
+
+        plt.figure()
+        plt.plot(epochs, accuracy, label=f"Trial {trial.trial_id}")
+        plt.title(f"Trial {trial.trial_id}")
+        plt.xlabel("Epoch")
+        plt.ylabel("Accuracy")
+        plt.legend()
 
 
 def main(num_samples=1, max_num_epochs=5):
 
     data_dir = os.path.abspath("./data")
-    device = "cpu"
 
-    trainset, testset = load_dataset(data_dir)
+    trainset, _ = load_dataset(data_dir)
 
     # Use the MNIST dataset. Evaluate at least 3 different numbers/values/types of:
     # • Learning rate, DONE
@@ -278,7 +271,7 @@ def main(num_samples=1, max_num_epochs=5):
     # • Width (number of neurons in hidden layers), DONE
     # • Loss functions (e.g., Mean Squared Error, Mean Absolute Error, Cross Entropy). DONE
     config = {
-        "epochs": 10,
+        "epochs": max_num_epochs,
         "num_classes": tune.choice([10]),
         "num_hidden": tune.choice([2**number for number in range(6, 9)]),
         "num_hidden_layers": tune.choice([0, 1, 5]),
@@ -287,6 +280,8 @@ def main(num_samples=1, max_num_epochs=5):
         "criterion": tune.choice(
             [
                 {"name": "CrossEntropyLoss", "criterion": nn.CrossEntropyLoss()},
+                {"name": "MSELoss", "criterion": nn.MSELoss()},
+                {"name": "L1Loss", "criterion": nn.L1Loss()},
             ]
         ),
     }
@@ -305,6 +300,7 @@ def main(num_samples=1, max_num_epochs=5):
         scheduler=scheduler,
     )
 
+    # plot_loss_learning_step(result)
     plot_accuracy_epoch(result)
 
     best_trial = result.get_best_trial("loss", "min", "last")
@@ -312,19 +308,9 @@ def main(num_samples=1, max_num_epochs=5):
     print(f"Best trial final validation loss: {best_trial.last_result['loss']}")
     print(f"Best trial final validation accuracy: {best_trial.last_result['accuracy']}")
 
-    best_trained_model = NeuralNetwork(
-        best_trial.config["num_classes"], best_trial.config["num_hidden"]
-    )
-    best_trained_model.to(device)
-
-    best_checkpoint = best_trial.checkpoint.to_directory()
-    best_checkpoint_data = torch.load(f"{best_checkpoint}/model.pt")
-
-    best_trained_model.load_state_dict(best_checkpoint_data)
-
-    test_acc = test_accuracy(best_trained_model, best_trial.config, testset, device)
-    print("Best trial test set accuracy: {}".format(test_acc))
+    plt.show()
+    print("Done")
 
 
 if __name__ == "__main__":
-    main(num_samples=10, max_num_epochs=10)
+    main(num_samples=3, max_num_epochs=10)
