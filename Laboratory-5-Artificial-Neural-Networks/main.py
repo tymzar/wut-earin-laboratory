@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 import torch.optim as optim
 from torchvision import datasets, transforms
 
+import ray
 from ray.train import torch as raytorch
 from ray import tune
 from ray.air import session
@@ -130,15 +131,15 @@ def train_mnist(config, trainset):
     criterion = config["criterion"]["criterion"]
     optimizer = optim.SGD(net.parameters(), lr=config["lr"])
 
-    checkpoint = session.get_checkpoint()
+    # checkpoint = session.get_checkpoint()
 
-    if checkpoint:
-        checkpoint_state = checkpoint.to_dict()
-        start_epoch = checkpoint_state["epoch"]
-        net.load_state_dict(checkpoint_state["net_state_dict"])
-        optimizer.load_state_dict(checkpoint_state["optimizer_state_dict"])
-    else:
-        start_epoch = 0
+    # if checkpoint:
+    #     checkpoint_state = checkpoint.to_dict()
+    #     start_epoch = checkpoint_state["epoch"]
+    #     net.load_state_dict(checkpoint_state["net_state_dict"])
+    #     optimizer.load_state_dict(checkpoint_state["optimizer_state_dict"])
+    # else:
+    #     start_epoch = 0
 
     test_abs = int(len(trainset) * 0.8)
     train_subset, val_subset = random_split(
@@ -161,7 +162,7 @@ def train_mnist(config, trainset):
 
     learning_step_loss_per_epoch = []
 
-    for epoch in range(start_epoch, config["epochs"]):
+    for epoch in range(0, config["epochs"]):
         current_step_loss = []
         running_loss = 0.0
         epoch_steps = 0
@@ -233,7 +234,7 @@ def train_mnist(config, trainset):
                     accuracy=correct / total,
                     learning_step_loss_per_epoch=learning_step_loss_per_epoch,
                 ),
-                checkpoint=Checkpoint.from_directory(tmpdir),
+                # checkpoint=Checkpoint.from_directory(tmpdir),
             )
 
     print("Finished Training")
@@ -245,43 +246,51 @@ def config_to_string(config: dict):
 
 def plot_loss_learning_step(results: list[list[float]], config: dict):
 
-    plt.figure()
-    plt.title(f"Trial with config: {config_to_string(config)}")
+    fig = plt.figure().add_subplot()
+    plt.title(f"Loss value for every step in best trial")
+
+    colormap = plt.cm.nipy_spectral
+    colors = colormap(np.linspace(0, 1, len(results)))
+    fig.set_prop_cycle('color', colors)
 
     # make one plot for all epochs in the trial
     for epoch in results:
-
-        plt.plot(epoch, label=f"Epoch {results.index(epoch)}")
-        for step in epoch:
-            plt.scatter(results.index(epoch), step, color="red")
+        fig.plot(epoch, label=f"Epoch {results.index(epoch)}")
 
     plt.xlabel("Step")
     plt.ylabel("Loss")
     plt.legend()
-    plt.show()
 
 
 def plot_accuracy_epoch(results: ExperimentAnalysis):
 
+    fig = plt.figure().add_subplot()
+
+    colormap = plt.cm.nipy_spectral
+    colors = colormap(np.linspace(0, 1, len(results.trials)))
+    fig.set_prop_cycle('color', colors)
     for trial in results.trials:
+        print(trial.trial_id)
         accuracy = trial.metric_n_steps["accuracy"]["10"]
         epochs = list(range(len(accuracy)))
 
-        plt.plot(
+        fig.plot(
             epochs,
             accuracy,
-            label=f"Trial {trial.trial_id}, config: {config_to_string(trial.config)}",
+            label=f"Trial {trial.trial_id}",
         )
-        plt.title(f"Trial {trial.trial_id}, config: {trial.config}")
-        plt.xlabel("Epoch")
-        plt.ylabel("Accuracy")
-        plt.legend()
+        fig.text(epochs[-1], accuracy[-1], f'{trial.trial_id[-3:]}')
+    plt.title(f"Convergence and accuracy for all trials")
+    plt.xlabel("Epoch")
+    plt.ylabel("Accuracy")
+    plt.legend()
 
 
 def main(num_samples=1, max_num_epochs=5):
 
     torch.manual_seed(0)
     np.random.seed(0)
+    ray.init(object_store_memory=10**9)
     data_dir = os.path.abspath("./data")
 
     trainset, _ = load_dataset(data_dir)
@@ -316,7 +325,7 @@ def main(num_samples=1, max_num_epochs=5):
     )
     result = tune.run(
         partial(train_mnist, trainset=trainset),
-        resources_per_trial={"cpu": 3, "gpu":0},
+        resources_per_trial={"cpu": 1.5, "gpu":0},
         config=config,
         num_samples=num_samples,
         scheduler=scheduler,
@@ -336,4 +345,4 @@ def main(num_samples=1, max_num_epochs=5):
 
 
 if __name__ == "__main__":
-    main(num_samples=2, max_num_epochs=6)
+    main(num_samples=16, max_num_epochs=3)
