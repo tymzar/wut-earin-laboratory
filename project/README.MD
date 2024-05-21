@@ -1,0 +1,2 @@
+First, go to https://www.kaggle.com/settings/account, log in and click "Create New Token". Next, copy the file kaggle.json to ~/.kaggle/kaggle.json.  
+Additionally, you need to set SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET environment variables. 
