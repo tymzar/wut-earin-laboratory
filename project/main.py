@@ -6,45 +6,53 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import joblib
 from sklearn.base import ClusterMixin
 from clustering import preprocess_dataset, train_clustering, find_cluster_members
-
-parser = argparse.ArgumentParser(description="Recommend a song")
-
-parser.add_argument("value", help="Name of the input song")
-
-args = parser.parse_args()
+import playlists
 
 
-spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+def main(song_name):
 
-search_query = args.value
-results = spotify.search(q=search_query, type="track", limit=1)['tracks']
+    playlists.load_dataset()
+    spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
-tracks = results['items']
-for track in tracks:
-    print(track["name"])
-    print([artist["name"] for artist in track["artists"]])
-    print(track["external_urls"])
+    search_query = song_name
+    results = spotify.search(q=search_query, type="track", limit=1)["tracks"]
 
-features = spotify.audio_features(tracks=[track["id"] for track in tracks])
-features = pd.DataFrame(features)
-features = preprocess_dataset(features)
-
-try:
-    km: ClusterMixin = joblib.load("trained_clastering")
-except (OSError, IOError) as e:
-    km = train_clustering()
-
-prediction = km.predict(features)[0]
-
-print(prediction)
-
-recommendations = find_cluster_members(prediction)
-
-for recommendation in recommendations:
-    query = f"isrc:{recommendation}"
-    results = spotify.search(q=query, type="track", limit=1)['tracks']
-    tracks = results['items']
+    tracks = results["items"]
     for track in tracks:
         print(track["name"])
         print([artist["name"] for artist in track["artists"]])
         print(track["external_urls"])
+
+    features = spotify.audio_features(tracks=[track["id"] for track in tracks])
+    features = pd.DataFrame(features)
+    features = preprocess_dataset(features)
+
+    try:
+        km: ClusterMixin = joblib.load("trained_clastering")
+    except (OSError, IOError) as e:
+        km = train_clustering()
+
+    prediction = km.predict(features)[0]
+
+    print(prediction)
+
+    recommendations = find_cluster_members(prediction)
+
+    for recommendation in recommendations:
+        query = f"isrc:{recommendation}"
+        results = spotify.search(q=query, type="track", limit=1)["tracks"]
+        tracks = results["items"]
+        for track in tracks:
+            print(track["name"])
+            print([artist["name"] for artist in track["artists"]])
+            print(track["external_urls"])
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Song recommendation system")
+
+    parser.add_argument("song_name", type=str, help="Name of the song")
+
+    arguments = parser.parse_args()
+
+    main(arguments.song_name)
