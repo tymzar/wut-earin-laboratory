@@ -55,7 +55,7 @@ def train_clustering() -> MiniBatchKMeans:
     data = load_dataset()
     data = preprocess_dataset(data)
     km = MiniBatchKMeans(
-        init="k-means++", batch_size=15, n_clusters=6, max_iter=500, verbose=False
+        init="k-means++", n_clusters=50, max_no_improvement=None, batch_size=256*16, verbose=False
     )
     km.fit(data)
     print(km.labels_)
@@ -67,10 +67,14 @@ def train_clustering() -> MiniBatchKMeans:
 
 def find_cluster_members(wanted_cluster):
     data = load_dataset()
-    samples_to_get = 1000
-    sample = data.sample(samples_to_get, ignore_index=True)
-    sample_without_titles = sample.copy()
+    samples_to_get = 10000
+    samples = data.sample(samples_to_get, ignore_index=True)
+    sample_without_titles = samples.copy()
     sample_without_titles = preprocess_dataset(sample_without_titles)
+    sp_release, sp_track = get_popularity()
+    samples = samples.set_index("isrc", drop=False).join(sp_track.set_index("isrc"), rsuffix="track_")
+    samples = samples.set_index("release_id").join(sp_release.set_index("release_id"), rsuffix="release_")
+
     try:
         km: MiniBatchKMeans = joblib.load("trained_clastering")
     except (OSError, IOError) as e:
@@ -81,10 +85,13 @@ def find_cluster_members(wanted_cluster):
     for id in range(0, samples_to_get):
         if len(recommendations) >= 5:
             break
-        if predictions[id] == wanted_cluster:
-            recommendations.append(sample.iloc[id]["isrc"])
+        if predictions[id] == wanted_cluster and samples.iloc[id]["popularity"] > 20:
+            recommendations.append(samples.iloc[id]["isrc"])
 
     return recommendations
 
-    # a = np.array(km.predict(sample))
-    # print(np.where(a = sample, ))
+
+def get_popularity() -> list[DataFrame]:
+    sp_release = pd.read_csv("datasets/10-m-tracks/sp_release.csv", header=0)
+    sp_track = pd.read_csv("datasets/10-m-tracks/sp_track.csv", header=0)
+    return [sp_release, sp_track]
