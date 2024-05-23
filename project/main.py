@@ -5,7 +5,7 @@ import pandas as pd
 from spotipy.oauth2 import SpotifyClientCredentials
 import joblib
 from sklearn.base import ClusterMixin
-from clustering import preprocess_dataset, train_clustering, find_cluster_members
+from clustering import *
 import playlists
 
 
@@ -23,29 +23,35 @@ def main(song_name):
         print([artist["name"] for artist in track["artists"]])
         print(track["external_urls"])
 
-    features = spotify.audio_features(tracks=[track["id"] for track in tracks])
-    features = pd.DataFrame(features)
-    features = preprocess_dataset(features)
+    features = pd.DataFrame(spotify.audio_features(tracks=[track["id"] for track in tracks]))
+    preprocessed_features = preprocess_dataset(features)
 
     try:
         km: ClusterMixin = joblib.load("trained_clastering")
     except (OSError, IOError) as e:
         km = train_clustering()
 
-    prediction = km.predict(features)[0]
+    prediction = km.predict(preprocessed_features)[0]
 
     print(prediction)
 
-    recommendations = find_cluster_members(prediction)
+    cluster_members = find_cluster_members(prediction)
+    popular = find_popular(cluster_members)
+    recommendations = find_most_similar(preprocessed_features, popular)
+    print(features)
+    print(recommendations)
 
-    for recommendation in recommendations:
-        query = f"isrc:{recommendation}"
+    for _, row in recommendations.iterrows():
+        isrc = row["isrc"]
+        query = f"isrc:{isrc}"
         results = spotify.search(q=query, type="track", limit=1)["tracks"]
+        print(f"Similarity: {row['similarity']}")
         tracks = results["items"]
         for track in tracks:
             print(track["name"])
             print([artist["name"] for artist in track["artists"]])
             print(track["external_urls"])
+            print()
 
 
 if __name__ == "__main__":
