@@ -21,13 +21,14 @@ def prepare_columns(df: DataFrame) -> DataFrame:
             "analysis_url",
             "id",
             "type",
-            "duration_ms"
+            "duration_ms",
         ],
         errors="ignore",
     )
 
     df = df.sort_index(axis=1)
     return df
+
 
 def preprocess_dataset(df: DataFrame) -> DataFrame:
     df = prepare_columns(df)
@@ -62,7 +63,11 @@ def train_clustering() -> MiniBatchKMeans:
     data = load_dataset()
     data = preprocess_dataset(data)
     km = MiniBatchKMeans(
-        init="k-means++", n_clusters=50, max_no_improvement=None, batch_size=16, verbose=False
+        init="k-means++",
+        n_clusters=50,
+        max_no_improvement=None,
+        batch_size=10 * 256,
+        verbose=False,
     )
     km.fit(data)
     joblib.dump(km, "trained_clastering")
@@ -82,7 +87,9 @@ def find_cluster_members(wanted_cluster):
         km = train_clustering()
 
     predictions = km.predict(sample_without_titles)
-    recommendations = pd.concat([samples, DataFrame(predictions, columns=["prediction"])], axis=1)
+    recommendations = pd.concat(
+        [samples, DataFrame(predictions, columns=["prediction"])], axis=1
+    )
     recommendations = recommendations.query(f"prediction == {wanted_cluster}")
 
     return recommendations
@@ -92,14 +99,18 @@ def find_most_similar(wanted: DataFrame, candidates: DataFrame):
     candidates = candidates.reset_index()
     preprocessed_candidates: DataFrame = preprocess_dataset(candidates)
     most_similar = cosine_similarity(wanted, preprocessed_candidates)[0]
-    most_similar = pd.concat([candidates["isrc"], DataFrame(most_similar, columns=["similarity"])], axis=1)
+    most_similar = pd.concat(
+        [candidates["isrc"], DataFrame(most_similar, columns=["similarity"])], axis=1
+    )
     most_similar = most_similar.sort_values(by="similarity", ascending=False)
     return most_similar.head(5)
 
-def find_popular(samples: DataFrame):
+
+def find_popular(samples: DataFrame, popularity: int):
     sp_release, sp_track = get_popularity()
     samples = samples.merge(sp_track, on="isrc").merge(sp_release, on="release_id")
-    return samples.query("popularity / total_tracks > 1")
+    return samples.query(f"popularity / total_tracks > {popularity}")
+
 
 def get_popularity() -> list[DataFrame]:
     sp_release = pd.read_csv("datasets/10-m-tracks/sp_release.csv", header=0)
