@@ -18,7 +18,7 @@ def main(popularity, temperature):
             == "y"
         ):
             if input("Do you want to change the popularity? (y/n): ") == "y":
-                popularity = int(input("Enter popularity: "))
+                popularity = float(input("Enter popularity: "))
 
             if input("Do you want to change the temperature? (y/n): ") == "y":
                 temperature = float(input("Enter temperature: "))
@@ -30,7 +30,7 @@ def main(popularity, temperature):
             break
 
 
-def type_positive_int(string):
+def type_positive_scale(string):
     value = float(string)
     if value < 0 or value > 1:
         raise argparse.ArgumentTypeError(
@@ -44,19 +44,17 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--popularity",
-        type=type_positive_int,
+        type=type_positive_scale,
         default=0.5,
         help="Minimum popularity of the song to be considered",
     )
 
     parser.add_argument(
         "--temperature",
-        type=type_positive_int,
+        type=type_positive_scale,
         default=0.5,
         help="Temperature of the recommendation system",
     )
-
-    # python main.py "Shape of You" --popularity 20
 
     arguments = parser.parse_args()
 

@@ -36,9 +36,9 @@ class Pipeline:
 
     def __init__(
         self,
-        popularity: int,
-        temperature: int,
-        cluster_model_path="trained_clustering_gm_5",
+        popularity: float,
+        temperature: float,
+        cluster_model_path="trained_clustering_gm_50",
     ) -> None:
 
         self.popularity = popularity
@@ -87,6 +87,9 @@ class Pipeline:
                     f"Artists: {', '.join([artist['name'] for artist in track['artists']])}"
                 )
                 print(f"URL: {track['external_urls']}\n")
+                print(
+                    f"\href{{{track['external_urls']['spotify']}}}{{{track['name']}}}  {row['similarity']}\n"
+                )
 
     def recommend(self, reference_song_sample: str):
 

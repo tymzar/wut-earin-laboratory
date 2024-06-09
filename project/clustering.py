@@ -60,14 +60,14 @@ def load_dataset() -> DataFrame:
     return df
 
 
-def train_clustering(model_path, model_type="sl") -> MiniBatchKMeans:
+def train_clustering(model_path, model_type="mk") -> MiniBatchKMeans:
     data = load_dataset()
     data = preprocess_dataset(data)
 
     if model_type == "mk":
         model = MiniBatchKMeans(
             init="k-means++",
-            n_clusters=50,
+            n_clusters=5,
             max_no_improvement=None,
             batch_size=10 * 256,
             verbose=False,
@@ -75,8 +75,10 @@ def train_clustering(model_path, model_type="sl") -> MiniBatchKMeans:
         model.fit(data)
 
     else:
-        model = GaussianMixture(n_components=5)
-        model.fit(data.sample(frac=0.1))
+        model = GaussianMixture(
+            n_components=50,
+        )
+        model.fit(data)
 
     joblib.dump(model, model_path)
 
@@ -109,7 +111,7 @@ def find_most_similar(wanted: DataFrame, candidates: DataFrame):
     return most_similar.head(5)
 
 
-def find_popular(samples: DataFrame, popularity: int):
+def find_popular(samples: DataFrame, popularity: float):
     sp_release, sp_track = get_popularity()
     samples = samples.merge(sp_track, on="isrc").merge(sp_release, on="release_id")
 
