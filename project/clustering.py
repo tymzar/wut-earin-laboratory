@@ -2,7 +2,8 @@ import kaggle
 import pandas as pd
 import os
 from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import MiniBatchKMeans, SpectralClustering
+from sklearn.cluster import MiniBatchKMeans
+from sklearn.mixture import GaussianMixture
 from sklearn.base import ClusterMixin
 from sklearn.metrics.pairwise import cosine_similarity
 import joblib
@@ -74,7 +75,7 @@ def train_clustering(model_path, model_type="sl") -> MiniBatchKMeans:
         model.fit(data)
 
     else:
-        model = SpectralClustering(n_clusters=50, n_init=10, n_jobs=-1)
+        model = GaussianMixture(n_components=5)
         model.fit(data.sample(frac=0.1))
 
     joblib.dump(model, model_path)
@@ -111,7 +112,11 @@ def find_most_similar(wanted: DataFrame, candidates: DataFrame):
 def find_popular(samples: DataFrame, popularity: int):
     sp_release, sp_track = get_popularity()
     samples = samples.merge(sp_track, on="isrc").merge(sp_release, on="release_id")
-    return samples.query(f"popularity / total_tracks > {popularity}")
+
+    highest_popularity = samples["popularity"].max()
+    query_popularity = popularity * highest_popularity
+
+    return samples.query(f"popularity / total_tracks > {query_popularity}")
 
 
 def get_popularity() -> list[DataFrame]:

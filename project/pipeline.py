@@ -38,7 +38,7 @@ class Pipeline:
         self,
         popularity: int,
         temperature: int,
-        cluster_model_path="trained_clustering_spectral",
+        cluster_model_path="trained_clustering_gm_5",
     ) -> None:
 
         self.popularity = popularity
@@ -99,7 +99,9 @@ class Pipeline:
             0
         ]
 
-        cluster_members = find_cluster_members(sample_song_cluster, self.temperature)
+        cluster_members = find_cluster_members(
+            self.__cluster_model, sample_song_cluster, self.temperature
+        )
 
         print(f"Selecting songs according to popularity > {self.popularity}")
         popular = find_popular(cluster_members, self.popularity)

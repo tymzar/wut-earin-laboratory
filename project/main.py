@@ -13,7 +13,7 @@ def main(popularity, temperature):
 
         if (
             input(
-                f"Do you want to change popularity or temperature? {popularity=}, {temperature=}: "
+                f"Do you want to change popularity or temperature? {popularity=}, {temperature=} (y/n): "
             )
             == "y"
         ):
@@ -30,7 +30,7 @@ def main(popularity, temperature):
             break
 
 
-def temperature_type(string):
+def type_positive_int(string):
     value = float(string)
     if value < 0 or value > 1:
         raise argparse.ArgumentTypeError(
@@ -44,15 +44,14 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--popularity",
-        type=int,
-        default=1,
+        type=type_positive_int,
+        default=0.5,
         help="Minimum popularity of the song to be considered",
     )
 
     parser.add_argument(
         "--temperature",
-        type=temperature_type,
-        # max 1 lowest 0
+        type=type_positive_int,
         default=0.5,
         help="Temperature of the recommendation system",
     )
