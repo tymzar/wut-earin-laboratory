@@ -1,75 +1,47 @@
-import spotipy
 import argparse
-import pandas as pd
 
-from spotipy.oauth2 import SpotifyClientCredentials
-import joblib
-from sklearn.base import ClusterMixin
-from clustering import *
+from pipeline import Pipeline
 
 
-def main(song_name, popularity):
+def main(popularity, temperature):
 
-    # print("Loading playlists dataset...")
-    # playlists.load_dataset()
-    print("Logging into Spotify...")
-    spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+    recommendation_pipeline = Pipeline(popularity, temperature)
 
-    search_query = song_name
-    print("Searching for song in Spotify...")
-    results = spotify.search(q=search_query, type="track", limit=1)["tracks"]
+    while True:
 
-    tracks = results["items"]
-    for track in tracks:
-        print(track["name"])
-        print([artist["name"] for artist in track["artists"]])
-        print(track["external_urls"])
+        song_name = input("Enter song name: ")
 
-    print("Fetching audio features of the song")
-    features = pd.DataFrame(
-        spotify.audio_features(tracks=[track["id"] for track in tracks])
-    )
-    print("Preprocessing dataset...")
-    preprocessed_features = preprocess_dataset(features)
+        if (
+            input(
+                f"Do you want to change popularity or temperature? {popularity=}, {temperature=}: "
+            )
+            == "y"
+        ):
+            if input("Do you want to change the popularity? (y/n): ") == "y":
+                popularity = int(input("Enter popularity: "))
 
-    try:
-        km: ClusterMixin = joblib.load("trained_clastering")
-    except (OSError, IOError) as e:
-        km = train_clustering()
+            if input("Do you want to change the temperature? (y/n): ") == "y":
+                temperature = float(input("Enter temperature: "))
 
-    print("Predicting song cluster...")
-    prediction = km.predict(preprocessed_features)[0]
+        recommendation_pipeline = Pipeline(popularity, temperature)
+        recommendation_pipeline.recommend(song_name)
 
-    print(f"Predicted cluster: {prediction}")
+        if input("Do you want to continue? (y/n): ") == "n":
+            break
 
-    print("Finding other members of the cluster...")
-    cluster_members = find_cluster_members(prediction)
-    print("Finding most popular members...")
-    popular = find_popular(cluster_members, popularity)
-    print("Finding the most similar songs in cluster...")
-    recommendations = find_most_similar(preprocessed_features, popular)
-    print("Done!")
-    print()
 
-    for _, row in recommendations.iterrows():
-        isrc = row["isrc"]
-        query = f"isrc:{isrc}"
-        results = spotify.search(q=query, type="track", limit=1)["tracks"]
-        tracks = results["items"]
-        for track in tracks:
-            print(track["name"])
-            print([artist["name"] for artist in track["artists"]])
-            print(track["external_urls"])
-            print(f"Similarity: {row['similarity']}")
-            print()
+def temperature_type(string):
+    value = float(string)
+    if value < 0 or value > 1:
+        raise argparse.ArgumentTypeError(
+            f"Temperature must be between 0 and 1, got {value}"
+        )
+    return value
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Song recommendation system")
-    # string with spaces
-    parser.add_argument(
-        "song_name", type=str, help="Name of the song to be recommended"
-    )
+
     parser.add_argument(
         "--popularity",
         type=int,
@@ -77,8 +49,16 @@ if __name__ == "__main__":
         help="Minimum popularity of the song to be considered",
     )
 
+    parser.add_argument(
+        "--temperature",
+        type=temperature_type,
+        # max 1 lowest 0
+        default=0.5,
+        help="Temperature of the recommendation system",
+    )
+
     # python main.py "Shape of You" --popularity 20
 
     arguments = parser.parse_args()
 
-    main(arguments.song_name, arguments.popularity)
+    main(arguments.popularity, arguments.temperature)

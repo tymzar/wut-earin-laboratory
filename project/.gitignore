@@ -1,4 +1,5 @@
 datasets
-trained_clastering
+trained_clustering
 trained_scaler
 playlist_dataset
+trained_clustering*

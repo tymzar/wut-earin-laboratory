@@ -1,3 +1,5 @@
 spotipy
 scikit-learn==1.4.0
 kaggle
+python-dotenv
+pandas
