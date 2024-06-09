@@ -101,7 +101,7 @@ class Pipeline:
 
         cluster_members = find_cluster_members(sample_song_cluster, self.temperature)
 
-        print(f"Selecting dongs according to popularity > {self.popularity}")
+        print(f"Selecting songs according to popularity > {self.popularity}")
         popular = find_popular(cluster_members, self.popularity)
 
         print("Predicting most similar songs...")
