@@ -6,7 +6,6 @@ from sklearn.cluster import MiniBatchKMeans
 from sklearn.metrics.pairwise import cosine_similarity
 import joblib
 from pandas import DataFrame
-import numpy as np
 
 
 def prepare_columns(df: DataFrame) -> DataFrame:
@@ -35,7 +34,7 @@ def preprocess_dataset(df: DataFrame) -> DataFrame:
 
     try:
         standard_scaler: StandardScaler = joblib.load("trained_scaler")
-    except (OSError, IOError) as e:
+    except (OSError, IOError):
         standard_scaler = StandardScaler()
         standard_scaler.fit(prepare_columns(load_dataset()))
         joblib.dump(standard_scaler, "trained_scaler")
@@ -70,20 +69,20 @@ def train_clustering() -> MiniBatchKMeans:
         verbose=False,
     )
     km.fit(data)
-    joblib.dump(km, "trained_clastering")
+    joblib.dump(km, "trained_clustering")
 
     return km
 
 
-def find_cluster_members(wanted_cluster):
+def find_cluster_members(wanted_cluster, temperature: float):
     data = load_dataset()
-    samples_to_get = 1000000
+    samples_to_get = int(data.shape[0] * temperature)
     samples = data.sample(samples_to_get, ignore_index=True)
     sample_without_titles = preprocess_dataset(samples)
 
     try:
-        km: MiniBatchKMeans = joblib.load("trained_clastering")
-    except (OSError, IOError) as e:
+        km: MiniBatchKMeans = joblib.load("trained_clustering")
+    except (OSError, IOError):
         km = train_clustering()
 
     predictions = km.predict(sample_without_titles)
