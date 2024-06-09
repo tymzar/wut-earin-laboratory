@@ -2,7 +2,8 @@ import kaggle
 import pandas as pd
 import os
 from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import MiniBatchKMeans
+from sklearn.cluster import MiniBatchKMeans, SpectralClustering
+from sklearn.base import ClusterMixin
 from sklearn.metrics.pairwise import cosine_similarity
 import joblib
 from pandas import DataFrame
@@ -58,32 +59,34 @@ def load_dataset() -> DataFrame:
     return df
 
 
-def train_clustering() -> MiniBatchKMeans:
+def train_clustering(model_path, model_type="sl") -> MiniBatchKMeans:
     data = load_dataset()
     data = preprocess_dataset(data)
-    km = MiniBatchKMeans(
-        init="k-means++",
-        n_clusters=50,
-        max_no_improvement=None,
-        batch_size=10 * 256,
-        verbose=False,
-    )
-    km.fit(data)
-    joblib.dump(km, "trained_clustering")
 
-    return km
+    if model_type == "mk":
+        model = MiniBatchKMeans(
+            init="k-means++",
+            n_clusters=50,
+            max_no_improvement=None,
+            batch_size=10 * 256,
+            verbose=False,
+        )
+        model.fit(data)
+
+    else:
+        model = SpectralClustering(n_clusters=50, n_init=10, n_jobs=-1)
+        model.fit(data.sample(frac=0.1))
+
+    joblib.dump(model, model_path)
+
+    return model
 
 
-def find_cluster_members(wanted_cluster, temperature: float):
+def find_cluster_members(km: ClusterMixin, wanted_cluster, temperature: float):
     data = load_dataset()
     samples_to_get = int(data.shape[0] * temperature)
     samples = data.sample(samples_to_get, ignore_index=True)
     sample_without_titles = preprocess_dataset(samples)
-
-    try:
-        km: MiniBatchKMeans = joblib.load("trained_clustering")
-    except (OSError, IOError):
-        km = train_clustering()
 
     predictions = km.predict(sample_without_titles)
     recommendations = pd.concat(

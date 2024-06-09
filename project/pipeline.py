@@ -1,4 +1,5 @@
 import spotipy
+import os
 import pandas as pd
 import dotenv
 from clustering import (
@@ -25,13 +26,19 @@ class Pipeline:
 
     def __load_cluster_model(self, cluster_model_path: str):
 
-        try:
-            self.__cluster_model = joblib.load(cluster_model_path)
-        except (OSError, IOError):
-            self.__cluster_model = train_clustering()
+        if os.path.isfile(cluster_model_path):
+            try:
+                self.__cluster_model = joblib.load(cluster_model_path)
+            except (OSError, IOError, FileNotFoundError):
+                self.__cluster_model = train_clustering()
+        else:
+            self.__cluster_model = train_clustering(cluster_model_path)
 
     def __init__(
-        self, popularity: int, temperature: int, cluster_model_path="trained_clustering"
+        self,
+        popularity: int,
+        temperature: int,
+        cluster_model_path="trained_clustering_spectral",
     ) -> None:
 
         self.popularity = popularity
